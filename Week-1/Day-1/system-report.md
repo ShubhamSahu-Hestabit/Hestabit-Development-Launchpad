@@ -38,7 +38,7 @@ lsb_release -a
 ```
 
 **Output:**
-![OS Version](images/OS_version.png)
+![OS Version](Images/OS_version.png)
 
 ---
 
