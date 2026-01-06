@@ -1,10 +1,10 @@
 # Hestabit Development Launchpad
 
-This repository contains **training and learning content** created as part of the Hestabit onboarding and development program.
+This repository contains training work completed by me as part of the Hestabit onboarding and learning program.
 
-The repository is **updated daily and weekly** to reflect continuous learning progress and completed training tasks.
+It is updated regularly to reflect my day-wise and week-wise progress during the training period.
 
-Each folder represents structured work completed during the training journey.
+Each folder represents the tasks and assignments completed as part of the learning journey.
 
 ---
 
