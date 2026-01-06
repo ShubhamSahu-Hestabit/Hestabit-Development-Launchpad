@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Buffer Read (fs.readFile)",
+    "executionTimeMs": "69.07",
+    "memoryUsageMB": "0.57"
+  },
+  {
+    "label": "Stream Read (fs.createReadStream)",
+    "executionTimeMs": "108.25",
+    "memoryUsageMB": "1.24"
+  }
+]
