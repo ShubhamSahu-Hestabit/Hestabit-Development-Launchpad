@@ -1,0 +1,48 @@
+{
+  "totalWords": 220004,
+  "uniqueWords": 25,
+  "longestWord": "reprehenderit",
+  "shortestWord": "dolor",
+  "topWords": [
+    {
+      "word": "dolor",
+      "count": 10422
+    },
+    {
+      "word": "lorem",
+      "count": 5315
+    },
+    {
+      "word": "magna",
+      "count": 5315
+    },
+    {
+      "word": "laboris",
+      "count": 5303
+    },
+    {
+      "word": "aliqua",
+      "count": 5301
+    },
+    {
+      "word": "minim",
+      "count": 5295
+    },
+    {
+      "word": "irure",
+      "count": 5282
+    },
+    {
+      "word": "nostrud",
+      "count": 5280
+    },
+    {
+      "word": "adipiscing",
+      "count": 5278
+    },
+    {
+      "word": "commodo",
+      "count": 5266
+    }
+  ]
+}

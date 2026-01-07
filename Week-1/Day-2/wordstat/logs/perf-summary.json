@@ -1,0 +1,22 @@
+[
+  {
+    "concurrency": 1,
+    "runtimeMs": 110.63,
+    "timestamp": "2026-01-07T06:52:16.436Z"
+  },
+  {
+    "concurrency": 1,
+    "runtimeMs": 110.66,
+    "timestamp": "2026-01-07T06:54:09.444Z"
+  },
+  {
+    "concurrency": 4,
+    "runtimeMs": 91.37,
+    "timestamp": "2026-01-07T06:54:09.595Z"
+  },
+  {
+    "concurrency": 8,
+    "runtimeMs": 130.3,
+    "timestamp": "2026-01-07T06:54:09.789Z"
+  }
+]
