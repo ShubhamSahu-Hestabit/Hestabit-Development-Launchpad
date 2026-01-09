@@ -1,0 +1,107 @@
+
+
+============================================================
+DAY 4 — HTTP / API FORENSICS (CURL)
+DNS LOOKUP
+
+$ nslookup dummyjson.com
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Non-authoritative answer:
+Name:	dummyjson.com
+Address: 104.21.61.23
+Name:	dummyjson.com
+Address: 172.67.205.42
+Name:	dummyjson.com
+Address: 2606:4700:3031::ac43:cd2a
+Name:	dummyjson.com
+Address: 2606:4700:3033::6815:3d17
+
+============================================================
+TRACEROUTE
+============================================================
+
+$ traceroute dummyjson.com
+traceroute to dummyjson.com (104.21.61.23), 30 hops max, 60 byte packets
+ 1  _gateway (10.10.0.1)  7.773 ms  7.690 ms  7.701 ms
+ 2  14.96.247.185 (14.96.247.185)  9.174 ms  11.809 ms  9.404 ms
+ 3  203.132.144.110 (203.132.144.110)  12.384 ms  12.371 ms  9.737 ms
+ 4  203.132.144.109 (203.132.144.109)  11.639 ms  12.336 ms  9.923 ms
+ 5  116.119.61.209 (116.119.61.209)  312.576 ms
+ 6  162.158.20.18 (162.158.20.18)  312.001 ms
+ 7  162.158.20.55 (162.158.20.55)  266.795 ms
+ 8  104.21.61.23 (104.21.61.23)  168.695 ms
+
+============================================================
+CURL — PAGINATION
+============================================================
+
+$ curl -v https://dummyjson.com/products?limit=5&skip=10
+> GET /products?limit=5&skip=10 HTTP/2
+> Host: dummyjson.com
+> User-Agent: curl/8.5.0
+> Accept: */*
+
+< HTTP/2 200
+< content-type: application/json; charset=utf-8
+< server: cloudflare
+< cf-cache-status: DYNAMIC
+< etag: W/"1cf6-vKLgOnINYP3dn8/IH5KH5MkT1tI"
+
+{"products":[...],"total":194,"skip":10,"limit":5}
+
+============================================================
+CURL — FAKE AUTHORIZATION HEADER
+============================================================
+
+$ curl -v -H "Authorization: Bearer FAKE_TOKEN" https://dummyjson.com/products?limit=5
+> Authorization: Bearer FAKE_TOKEN
+
+< HTTP/2 200
+< content-type: application/json; charset=utf-8
+
+============================================================
+CURL — REMOVE USER-AGENT
+============================================================
+
+$ curl -v -H "User-Agent:" https://dummyjson.com/products?limit=5
+> GET /products?limit=5 HTTP/2
+> Host: dummyjson.com
+> Accept: */*
+
+< HTTP/2 200
+< content-type: application/json; charset=utf-8
+
+============================================================
+CURL — ETAG CACHE REVALIDATION (FULL VERBOSE)
+============================================================
+
+$ curl -v -H 'If-None-Match: "W/\"1cf6-vKLgOnINYP3dn8/IH5KH5MkT1tI\""' https://dummyjson.com/products?limit=5
+* Host dummyjson.com:443 was resolved.
+* IPv6: 2606:4700:3033::6815:3d17, 2606:4700:3031::ac43:cd2a
+* IPv4: 172.67.205.42, 104.21.61.23
+*   Trying 172.67.205.42:443...
+* Connected to dummyjson.com (172.67.205.42) port 443
+* ALPN: curl offers h2,http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* SSL connection using TLSv1.3
+* using HTTP/2
+
+> GET /products?limit=5 HTTP/2
+> Host: dummyjson.com
+> User-Agent: curl/8.5.0
+> Accept: */*
+> If-None-Match: "W/\"1cf6-vKLgOnINYP3dn8/IH5KH5MkT1tI\""
+
+< HTTP/2 200
+< content-type: application/json; charset=utf-8
+< etag: W/"1cf6-vKLgOnINYP3dn8/IH5KH5MkT1tI"
+< cf-cache-status: DYNAMIC
+
+{"products":[FULL JSON RESPONSE AS RECEIVED]}
+
+* Connection #0 to host dummyjson.com left intact
+
+
