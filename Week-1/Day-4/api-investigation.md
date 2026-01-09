@@ -77,7 +77,7 @@ curl -v https://dummyjson.com/products?limit=5&skip=10
 ```bash
 curl -v -H "User-Agent:" https://dummyjson.com/products?limit=5
 ```
-![Response Headers](screenshots/header.png)
+![Response Headers](screenshots/agent_header.png)
 
 **Result:**
 - Request still succeeds
@@ -105,7 +105,7 @@ curl -v -H "Authorization: Bearer FAKE_TOKEN" https://dummyjson.com/products?lim
 ```bash
 curl -I https://dummyjson.com/products?limit=5
 ```
-
+![Response Headers](screenshots/header.png)
 ### Observed Header
 ```
 etag: W/"1cf6-vKLgOnINYP3dn8/IH5KH5MkT1tI"
