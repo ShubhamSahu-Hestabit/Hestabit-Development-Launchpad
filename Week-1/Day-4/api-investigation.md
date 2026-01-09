@@ -15,7 +15,6 @@ All commands and outputs are captured as terminal-style logs (paths/usernames re
 ```bash
 nslookup dummyjson.com
 ```
-![Pagination Request](screenshots/Postman.png)
 
 ### Output
 ```
@@ -61,6 +60,7 @@ traceroute to dummyjson.com (172.67.205.42), 30 hops max
 curl -v https://dummyjson.com/products?limit=5&skip=10
 ```
 
+![Pagination Request](screenshots/Postman.png)
 ### Observations
 - `limit` controls number of items returned
 - `skip` controls offset
@@ -77,6 +77,7 @@ curl -v https://dummyjson.com/products?limit=5&skip=10
 ```bash
 curl -v -H "User-Agent:" https://dummyjson.com/products?limit=5
 ```
+![Response Headers](screenshots/header.png)
 
 **Result:**
 - Request still succeeds
@@ -99,6 +100,7 @@ curl -v -H "Authorization: Bearer FAKE_TOKEN" https://dummyjson.com/products?lim
 ## 5. Caching & ETag
 
 ### Fetch Headers
+![ETag Header](screenshots/etag.png)
 
 ```bash
 curl -I https://dummyjson.com/products?limit=5
