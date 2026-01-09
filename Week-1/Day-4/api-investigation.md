@@ -15,6 +15,7 @@ All commands and outputs are captured as terminal-style logs (paths/usernames re
 ```bash
 nslookup dummyjson.com
 ```
+![Pagination Request](screenshots/Postman.png)
 
 ### Output
 ```
