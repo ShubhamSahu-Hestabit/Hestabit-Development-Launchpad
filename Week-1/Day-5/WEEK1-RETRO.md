@@ -1,10 +1,5 @@
 # Week 1 — Engineering Mindset Bootcamp (Learning & Reflection)
 
-This repository documents my **Week 1 journey** during the **Hestabit Training Launchpad**.  
-The focus of this week was not only task completion, but learning **how to think like an engineer** working from the terminal, understanding systems, handling Git failures, automating checks, and documenting everything clearly.
-
-This document is written honestly, based on what I actually did, struggled with, and learned.
-
 ---
 
 ## Repository Structure
@@ -198,8 +193,6 @@ crontab -e
   - Testing things manually in the terminal
   - Writing my own explanations and notes
 
-## Related Document
-- `WEEK1-RETRO.md` — Detailed learning and breakdown
 
 ---
 
