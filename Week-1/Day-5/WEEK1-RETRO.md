@@ -52,7 +52,7 @@ nvm ls
 - Streams are safer for large files.
 - Performance must be measured, not assumed.
 
-![Day 1 Screenshot](Day-5/images/day1.png)
+![Day 1 Screenshot](./Day-5/images/day1.png)
 
 ---
 
@@ -74,7 +74,7 @@ node wordstat.js --file corpus.txt --top 10 --minLen 5 --unique
 - CLI design matters for usability.
 - Benchmarks reveal real system limits.
 
-![Day 2 Screenshot](Day-5/images/day2.png)
+![Day 2 Screenshot](./Day-5/images/day2.png)
 
 ---
 
@@ -107,7 +107,7 @@ git stash
 - Merge preserves context and is safer.
 - Git is a recovery tool, not just version control.
 
-![Day 3 Screenshot](Day-5/images/day3.png)
+![Day 3 Screenshot](./Day-5/images/day3.png)
 
 ---
 
@@ -135,7 +135,7 @@ git rm <file>
 - Mixing GitHub UI and local Git workflows causes issues.
 - Repository structure should be decided early.
 
-![Day 4 Screenshot](Day-5/images/day4.png)
+![Day 4 Screenshot](./Day-5/images/day4.png)
 
 ---
 
@@ -164,7 +164,7 @@ crontab -e
 - Automation fails silently if paths are wrong.
 - Structure is as important as code.
 
-![Day 5 Screenshot](Day-5/images/day5.png)
+![Day 5 Screenshot](./Day-5/images/day5.png)
 
 ---
 
