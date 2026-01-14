@@ -4,6 +4,7 @@
 - **Navbar:** Header with menu, categories dropdown, quantity counter, and offer button.
 ![Navbar and Quantity](images/navbar.png)
 - **Dropdown:** Categories dropdown toggled using click event listener.
+
 ![Dropdown](images/dropdown.png)
 - **Quantity Counter:** Increment and decrement quantity using + and − buttons with event listeners.
 - **Modal:** Offer modal opens and closes using click-based event listeners.
