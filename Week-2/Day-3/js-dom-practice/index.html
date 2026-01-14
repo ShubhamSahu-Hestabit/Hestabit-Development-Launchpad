@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>JS DOM Practice</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">Clothify</div>
+
+  <div class="nav-actions">
+    <button id="menuBtn">Menu</button>
+    
+
+    <div class="dropdown-wrapper">
+      <button id="dropdownBtn">Categories</button>
+      <ul id="dropdown" class="hidden">
+        <li>Men</li>
+        <li>Women</li>
+        <li>Kids</li>
+      </ul>
+    </div>
+    <div class="quantity">
+        <span>Qty</span>
+        <button id="decrease">−</button>
+        <span id="count">0</span>
+        <button id="increase">+</button>
+    </div>
+
+    <button id="openModal" class="offer-btn">Get 20% Off</button>
+  </div>
+</header>
+
+
+
+<div id="modalOverlay" class="hidden">
+  <div class="modal">
+    <h3>Special Offer</h3>
+    <p>Get 20% off on your first clothing order.</p>
+    <button id="closeModal">Close</button>
+  </div>
+</div>
+
+<main class="faq-wrapper">
+  <h1>Clothing FAQs</h1>
+  <div id="faq"></div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
