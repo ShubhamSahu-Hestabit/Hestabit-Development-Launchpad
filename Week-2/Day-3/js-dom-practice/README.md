@@ -8,6 +8,7 @@
 ![Dropdown](images/dropdown.png)
 - **Quantity Counter:** Increment and decrement quantity using + and − buttons with event listeners.
 - **Modal:** Offer modal opens and closes using click-based event listeners.
+
 ![Modal](images/modal.png)
 - **FAQ Section:** Click-to-expand clothing FAQs using DOM manipulation and event listeners.
 ![FAQ Section](images/faq.png)
