@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WEARLY | Products</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="navbar">
+  <a href="index.html" class="nav-link">Home</a>
+  <h1 class="logo">WEARLY</h1>
+  <span></span>
+</header>
+
+<section class="page-head">
+  <h2>Explore Our Collection</h2>
+  <p>Clothing, footwear, watches, sunglasses & bags curated for you</p>
+</section>
+
+<!-- CATEGORY TABS -->
+<section class="tabs">
+  <button data-main="all" class="active">All</button>
+  <button data-main="clothing">Clothing</button>
+  <button data-main="footwear">Footwear</button>
+  <button data-main="watches">Watches</button>
+  <button data-main="sunglasses">Sunglasses</button>
+  <button data-main="bags">Bags</button>
+</section>
+
+<!-- FILTER BAR -->
+<section class="filters">
+  <select id="genderSelect">
+    <option value="all">All</option>
+    <option value="men">Men</option>
+    <option value="women">Women</option>
+  </select>
+
+  <input id="searchInput" placeholder="Search products..." />
+
+  <select id="sortSelect">
+  <option value="default">Default</option>
+  <option value="high-low">Price: High → Low</option>
+  <option value="low-high">Price: Low → High</option>
+  <option value="az">Name: A → Z</option>
+  <option value="za">Name: Z → A</option>
+  <option value="rating-high">Rating: High → Low</option>
+  <option value="rating-low">Rating: Low → High</option>
+</select>
+
+</section>
+
+<!-- PRODUCTS -->
+<section id="productGrid" class="grid"></section>
+
+<script src="app.js"></script>
+</body>
+</html>
