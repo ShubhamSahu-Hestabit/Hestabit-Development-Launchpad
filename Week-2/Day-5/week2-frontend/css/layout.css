@@ -1,0 +1,38 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: #fff;
+}
+
+.logo {
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.hero, .page-hero {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.category-boxes, .subcategory-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 20px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 30px 0;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  padding: 40px;
+}
