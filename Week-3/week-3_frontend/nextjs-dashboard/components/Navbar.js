@@ -1,8 +1,11 @@
 'use client'
 
 import { Menu, Search, Bell, User, ChevronDown } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function Navbar({ toggleSidebar }) {
+  const router = useRouter()
+
   return (
     <header 
       className="fixed top-0 left-0 right-0 h-16 z-[10000] border-b border-gray-800 shadow-md"
@@ -13,19 +16,19 @@ export default function Navbar({ toggleSidebar }) {
         width: '100%',
         left: 0,
         right: 0,
-        padding: 0, // Remove default padding here to let the brand box touch the edge
+        padding: 0,
         boxSizing: 'border-box'
       }}
     >
       
       {/* 1. BRAND SECTION (Matched to Sidebar Width) */}
       <div style={{ 
-        width: '225px',       // Exact width of your sidebar
+        width: '225px',
         height: '100%',
         display: 'flex',
         alignItems: 'center',
-        paddingLeft: '24px',  // Padding for the text
-        flexShrink: 0         // Prevents the box from squishing
+        paddingLeft: '24px',
+        flexShrink: 0
       }}>
         <span style={{ 
           color: 'white', 
@@ -49,7 +52,7 @@ export default function Navbar({ toggleSidebar }) {
           display: 'flex', 
           alignItems: 'center',
           padding: '0 10px',
-          marginLeft: '10px' // Space between text and hamburger
+          marginLeft: '10px'
         }}
       >
         <Menu size={24} />
@@ -60,7 +63,7 @@ export default function Navbar({ toggleSidebar }) {
         display: 'flex', 
         alignItems: 'center', 
         gap: '24px', 
-        marginLeft: 'auto', // This pushes everything after the hamburger to the right
+        marginLeft: 'auto',
         paddingRight: '24px' 
       }}>
         
@@ -86,7 +89,10 @@ export default function Navbar({ toggleSidebar }) {
         {/* Profile Icons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', color: '#adb5bd' }}>
           <Bell size={20} style={{ cursor: 'pointer' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <div 
+            onClick={() => router.push('/dashboard/profile')}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+          >
             <div style={{ width: '32px', height: '32px', backgroundColor: '#6c757d', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                <User size={18} color="white" />
             </div>

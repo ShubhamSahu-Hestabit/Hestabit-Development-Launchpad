@@ -1,47 +1,60 @@
 'use client'
+
+import { useState } from "react"
 import Card from '@/components/Card'
 import Badge from '@/components/Badge'
 import Button from "@/components/Button"
+import Modal from "@/components/modal"
 import { AreaChartComponent, BarChartComponent } from '@/components/Chart'
 
 export default function DashboardPage() {
+  const [open, setOpen] = useState(false)
+  const [selectedCard, setSelectedCard] = useState(null)
+
   return (
     <div className="w-full max-w-full">
       {/* Page Title */}
       <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-      
+
       {/* Breadcrumb */}
       <div className="bg-gray-200 px-3 py-2 rounded mb-6 text-sm text-gray-600">
         Welcome to Hesta Analytics!
       </div>
 
-      {/* Colored Cards Row - FORCED SIDE BY SIDE */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(4, 1fr)', 
-        gap: '1.5rem',
-        marginBottom: '1.5rem'
-      }}>
+      {/* Cards Row */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '1.5rem',
+          marginBottom: '1.5rem'
+        }}
+      >
         <Card title="Primary Card" color="primary" />
         <Card title="Warning Card" color="warning" />
         <Card title="Success Card" color="success" />
         <Card title="Danger Card" color="danger" />
       </div>
 
-      {/* Actions Section */}
-      <div className="bg-white p-6 rounded-lg shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
-        
+      {/* Actions */}
+      <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Quick Actions
+        </h2>
+
         <div className="flex flex-wrap gap-3">
-          <Button variant="primary" onClick={() => setOpen(true)}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setSelectedCard(null)
+              setOpen(true)
+            }}
+          >
             📊 Generate Report
           </Button>
-          <Button variant="secondary">
-            📥 Export Data
-          </Button>
-          <Button variant="secondary">
-            ⚙️ Settings
-          </Button>
+
+          <Button variant="secondary">📥 Export Data</Button>
+          <Button variant="secondary">⚙️ Settings</Button>
         </div>
 
         <div className="mt-6 flex items-center gap-3">
@@ -51,16 +64,51 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      
+      {/* Modal */}
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title={selectedCard || "Analytics Report"}
+      >
+        <div className="space-y-4">
+          <p className="text-gray-600">
+            {selectedCard
+              ? `Detailed analytics for ${selectedCard} will appear here.`
+              : "Your analytics report is being generated..."}
+          </p>
 
+          <div className="bg-gray-50 p-4 rounded">
+            <div className="text-sm text-gray-600 space-y-2">
+              <div className="flex justify-between">
+                <span>Period:</span>
+                <span className="font-semibold">Last 30 days</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Data Points:</span>
+                <span className="font-semibold">1,234</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Last Updated:</span>
+                <span className="font-semibold">2 mins ago</span>
+              </div>
+            </div>
+          </div>
 
-      {/* Charts Row - FORCED SIDE BY SIDE */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(2, 1fr)', 
-        gap: '1.5rem',
-        marginBottom: '1.5rem'
-      }}>
+          <Button variant="primary" onClick={() => setOpen(false)}>
+            Download PDF Report
+          </Button>
+        </div>
+      </Modal>
+
+      {/* Charts */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '1.5rem',
+          marginBottom: '1.5rem'
+        }}
+      >
         <AreaChartComponent />
         <BarChartComponent />
       </div>
@@ -72,7 +120,7 @@ export default function DashboardPage() {
             <span>📋</span> Datatable Example
           </h3>
         </div>
-        
+
         <div className="p-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
             <div className="flex items-center gap-2">
@@ -84,7 +132,7 @@ export default function DashboardPage() {
               </select>
               <span className="text-sm text-gray-700">entries</span>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <label className="text-sm text-gray-700">Search:</label>
               <input
@@ -98,15 +146,16 @@ export default function DashboardPage() {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-t border-b border-gray-300">
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 bg-white">Name</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 bg-white">Position</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 bg-white">Office</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 bg-white">Age</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 bg-white">Start Date</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 bg-white">Salary</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Name</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Position</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Office</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Age</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Start Date</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Salary</th>
                 </tr>
               </thead>
-              <tbody className="bg-white">
+
+              <tbody>
                 {[
                   { name: 'Tiger Nixon', position: 'System Architect', office: 'Edinburgh', age: 61, date: '2011/04/25', salary: '$320,800' },
                   { name: 'Garrett Winters', position: 'Accountant', office: 'Tokyo', age: 63, date: '2011/07/25', salary: '$170,750' },
@@ -117,52 +166,46 @@ export default function DashboardPage() {
                   { name: 'Herrod Chandler', position: 'Sales Assistant', office: 'San Francisco', age: 59, date: '2012/08/06', salary: '$137,500' },
                   { name: 'Rhona Davidson', position: 'Integration Specialist', office: 'Tokyo', age: 55, date: '2010/10/14', salary: '$327,900' },
                   { name: 'Colleen Hurst', position: 'Javascript Developer', office: 'San Francisco', age: 39, date: '2009/09/15', salary: '$205,500' },
-                  { name: 'Sonya Frost', position: 'Software Engineer', office: 'Edinburgh', age: 23, date: '2008/12/13', salary: '$103,600' },
+                  { name: 'Sonya Frost', position: 'Software Engineer', office: 'Edinburgh', age: 23, date: '2008/12/13', salary: '$103,600' }
                 ].map((row, i) => (
-                  <tr key={i} className="border-b border-gray-200 hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm text-gray-900">{row.name}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{row.position}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{row.office}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{row.age}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{row.date}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{row.salary}</td>
+                  <tr key={i} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-3 text-sm">{row.name}</td>
+                    <td className="px-4 py-3 text-sm">{row.position}</td>
+                    <td className="px-4 py-3 text-sm">{row.office}</td>
+                    <td className="px-4 py-3 text-sm">{row.age}</td>
+                    <td className="px-4 py-3 text-sm">{row.date}</td>
+                    <td className="px-4 py-3 text-sm">{row.salary}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
+          {/* Pagination */}
           <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4">
             <div className="text-sm text-gray-700">
               Showing 1 to 10 of 57 entries
             </div>
+
             <div className="flex gap-1 flex-wrap">
-              <button className="px-3 py-1.5 border border-gray-300 rounded text-sm text-gray-500 bg-white" disabled>
+              <button className="px-3 py-1.5 border rounded text-sm text-gray-500" disabled>
                 Previous
               </button>
-              <button className="px-3 py-1.5 bg-blue-500 text-white rounded text-sm">
-                1
-              </button>
-              <button className="px-3 py-1.5 border border-gray-300 rounded text-sm text-blue-500 bg-white hover:bg-gray-50">
-                2
-              </button>
-              <button className="px-3 py-1.5 border border-gray-300 rounded text-sm text-blue-500 bg-white hover:bg-gray-50">
-                3
-              </button>
-              <button className="px-3 py-1.5 border border-gray-300 rounded text-sm text-blue-500 bg-white hover:bg-gray-50">
-                4
-              </button>
-              <button className="px-3 py-1.5 border border-gray-300 rounded text-sm text-blue-500 bg-white hover:bg-gray-50">
-                5
-              </button>
-              <button className="px-3 py-1.5 border border-gray-300 rounded text-sm text-blue-500 bg-white hover:bg-gray-50">
-                6
-              </button>
-              <button className="px-3 py-1.5 border border-gray-300 rounded text-sm text-blue-500 bg-white hover:bg-gray-50">
+              <button className="px-3 py-1.5 bg-blue-500 text-white rounded text-sm">1</button>
+              {[2,3,4,5,6].map(n => (
+                <button
+                  key={n}
+                  className="px-3 py-1.5 border rounded text-sm text-blue-500 hover:bg-gray-50"
+                >
+                  {n}
+                </button>
+              ))}
+              <button className="px-3 py-1.5 border rounded text-sm text-blue-500">
                 Next
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </div>
