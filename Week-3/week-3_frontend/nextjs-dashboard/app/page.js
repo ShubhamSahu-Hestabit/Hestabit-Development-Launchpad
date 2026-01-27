@@ -57,7 +57,7 @@ export default function LandingPage() {
         padding: '0 5%',
         zIndex: 1000
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 ,fontSize: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 20 }}>
           <BarChart3 color={theme.accent} />
           <strong>Hesta<span style={{ color: theme.accent }}>Analytics</span></strong>
         </div>
@@ -77,7 +77,12 @@ export default function LandingPage() {
         margin: '0 auto',
         padding: '140px 5% 100px'
       }}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-60 items-center">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '60px',
+          alignItems: 'center'
+        }}>
           {/* LEFT CONTENT */}
           <div>
             <h1 style={{
@@ -102,7 +107,7 @@ export default function LandingPage() {
             </p>
 
             {/* CTA BUTTONS */}
-            <div className="flex flex-wrap md:flex-nowrap" style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               <Link href="/dashboard" style={{
                 background: theme.accent,
                 padding: '14px 36px',
@@ -126,7 +131,7 @@ export default function LandingPage() {
             </div>
 
             {/* Feature highlights */}
-            <div className="flex flex-wrap lg:flex-nowrap" style={{ marginTop: 48, display: 'flex', gap: 32, flexWrap: 'wrap' }}>
+            <div style={{ marginTop: 48, display: 'flex', gap: 32, flexWrap: 'wrap' }}>
               <div>
                 <div style={{ color: theme.accent, fontSize: 32, fontWeight: 700 }}>99.9%</div>
                 <div style={{ color: theme.textMuted, fontSize: 14 }}>Uptime</div>
@@ -180,7 +185,11 @@ export default function LandingPage() {
         margin: '0 auto',
         padding: '80px 5%'
       }}>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-24">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '24px'
+        }}>
           {[
             { icon: Zap, title: "Fast Insights", text: "Live metrics update instantly." },
             { icon: Shield, title: "Secure Data", text: "Enterprise-grade security built-in." },
@@ -207,10 +216,16 @@ export default function LandingPage() {
           Trusted by founders and product teams worldwide
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-24 max-width-1100 mx-auto">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '24px',
+          maxWidth: 1100,
+          margin: '0 auto'
+        }}>
           {["Amazing UI and insights!", "Our decisions improved instantly.", "Clean, fast, reliable."].map((text, i) => (
             <div key={i} className="glass-card" style={{ padding: 32, borderRadius: 24 }}>
-              <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
+              <div style={{ display: 'flex', gap: 4, marginBottom: 12, justifyContent: 'center' }}>
                 {[...Array(5)].map((_, j) => (
                   <Star key={j} size={16} color="#facc15" fill="#facc15" />
                 ))}

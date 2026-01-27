@@ -1,13 +1,20 @@
 export default function Badge({ label, variant = "default" }) {
-  const variants = {
-    default: "bg-gray-200 text-gray-700",
-    success: "bg-green-100 text-green-700",
-    warning: "bg-yellow-100 text-yellow-700",
-    danger: "bg-red-100 text-red-700",
+  const styles = {
+    success: { backgroundColor: '#d1fae5', color: '#065f46' },
+    warning: { backgroundColor: '#fef3c7', color: '#92400e' },
+    danger: { backgroundColor: '#fee2e2', color: '#991b1b' },
+    default: { backgroundColor: '#e5e7eb', color: '#374151' },
   };
 
   return (
-    <span className={`px-2 py-1 text-xs rounded ${variants[variant]}`}>
+    <span 
+      style={{
+        padding: '0.25rem 0.5rem',
+        fontSize: '0.75rem',
+        borderRadius: '0.25rem',
+        ...styles[variant]
+      }}
+    >
       {label}
     </span>
   );
