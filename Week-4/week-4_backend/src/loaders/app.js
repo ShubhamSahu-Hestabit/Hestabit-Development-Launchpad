@@ -1,15 +1,18 @@
 import express from "express";
 import logger from "../utils/logger.js";
+import routes from "../routes/index.js";
 
 export default async function appLoader() {
   const app = express();
 
+  // middlewares
   app.use(express.json());
   logger.info("Middlewares loaded");
 
-  app.get("/health", (_, res) => res.send("OK"));
+  // routes
+  app.use("/api", routes);
 
-  logger.info("Routes mounted: 1 endpoints");
+  logger.info("Routes mounted: API routes");
 
   return app;
 }

@@ -5,29 +5,39 @@ class ProductRepository {
     return Product.create(data);
   }
 
+  // ❌ DO NOT use this for GET-by-ID
   async findById(id) {
     return Product.findById(id);
   }
 
-  async findPaginated({ page = 1, limit = 10 }) {
-    const skip = (page - 1) * limit;
+  // ✅ USE THIS for GET-by-ID
+  async findByIdActive(id) {
+    return Product.findOne({
+      _id: id,
+      deletedAt: null
+    });
+  }
 
-    const data = await Product.find()
+  async findAll({ filters, sort, skip, limit }) {
+    const data = await Product.find(filters)
+      .sort(sort)
       .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 });
+      .limit(limit);
 
-    const total = await Product.countDocuments();
-
-    return { total, page, limit, data };
+    const total = await Product.countDocuments(filters);
+    return { total, data };
   }
 
   async update(id, data) {
     return Product.findByIdAndUpdate(id, data, { new: true });
   }
 
-  async delete(id) {
-    return Product.findByIdAndDelete(id);
+  async softDelete(id) {
+    return Product.findByIdAndUpdate(
+      id,
+      { deletedAt: new Date() },
+      { new: true }
+    );
   }
 }
 
