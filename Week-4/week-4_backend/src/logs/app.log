@@ -46,3 +46,22 @@
 [2026-01-29T10:37:54.055Z] INFO: Middlewares loaded
 [2026-01-29T10:37:54.055Z] INFO: Routes mounted: API routes
 [2026-01-29T10:37:54.058Z] INFO: Server started on port 3000
+[2026-01-29T14:27:37.290Z] INFO: Database connected
+[2026-01-30T11:34:32.591Z] INFO: Database connected
+[2026-01-30T11:34:32.594Z] INFO: Loading security middleware...
+[2026-01-30T11:34:32.595Z] INFO: ✔ Security middleware loaded successfully
+[2026-01-30T11:34:32.595Z] INFO: Middlewares loaded
+[2026-01-30T11:34:32.595Z] INFO: Routes mounted: API routes
+[2026-01-30T11:34:32.598Z] INFO: Server started on port 3000
+[2026-01-30T11:35:05.499Z] WARN: Validation failed
+[2026-01-30T11:39:17.363Z] WARN: Rate limit exceeded
+[2026-01-30T11:39:17.382Z] WARN: Rate limit exceeded
+[2026-01-30T11:39:17.401Z] WARN: Rate limit exceeded
+[2026-01-30T11:39:17.418Z] WARN: Rate limit exceeded
+[2026-01-30T11:39:17.436Z] WARN: Rate limit exceeded
+[2026-01-30T11:39:17.456Z] WARN: Rate limit exceeded
+[2026-01-30T11:39:17.479Z] WARN: Rate limit exceeded
+[2026-01-30T11:39:17.500Z] WARN: Rate limit exceeded
+[2026-01-30T11:39:17.520Z] WARN: Rate limit exceeded
+[2026-01-30T11:39:17.539Z] WARN: Rate limit exceeded
+[2026-01-30T11:39:17.557Z] WARN: Rate limit exceeded
