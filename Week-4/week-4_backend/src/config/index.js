@@ -8,4 +8,5 @@ export default {
   env,
   port: process.env.PORT,
   dbUrl: process.env.DB_URL,
+  redisUrl: process.env.REDIS_URL,
 };

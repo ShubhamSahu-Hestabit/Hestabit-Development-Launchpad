@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "bullmq": "^5.67.2",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "express": "^4.19.2",
@@ -20,6 +21,7 @@
     "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",
     "hpp": "^0.2.3",
+    "ioredis": "^5.9.2",
     "joi": "^18.0.2",
     "mongoose": "^9.1.5",
     "winston": "^3.13.0",
