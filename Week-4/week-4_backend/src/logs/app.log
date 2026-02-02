@@ -65,3 +65,89 @@
 [2026-01-30T11:39:17.520Z] WARN: Rate limit exceeded
 [2026-01-30T11:39:17.539Z] WARN: Rate limit exceeded
 [2026-01-30T11:39:17.557Z] WARN: Rate limit exceeded
+[2026-01-30T14:25:39.365Z] INFO: Database connected
+[2026-02-02T06:35:41.314Z] INFO: Database connected
+[2026-02-02T06:35:41.316Z] INFO: Loading security middleware...
+[2026-02-02T06:35:41.317Z] INFO: ✔ Security middleware loaded successfully
+[2026-02-02T06:35:41.317Z] INFO: Middlewares loaded
+[2026-02-02T06:35:41.318Z] INFO: Routes mounted: API routes
+[2026-02-02T06:35:41.320Z] INFO: Server started on port 3000
+[2026-02-02T06:43:43.526Z] INFO: Redis connected successfully
+[2026-02-02T06:43:43.564Z] INFO: Database connected
+[2026-02-02T06:43:43.569Z] INFO: Loading security middleware...
+[2026-02-02T06:43:43.573Z] INFO: ✔ Security middleware loaded successfully
+[2026-02-02T06:43:43.573Z] INFO: Middlewares loaded
+[2026-02-02T06:43:43.574Z] INFO: Routes mounted: API routes
+[2026-02-02T06:43:43.582Z] INFO: Server started on port 3000
+[2026-02-02T06:50:53.012Z] INFO: Email job added to queue
+[2026-02-02T06:50:53.017Z] INFO: Processing email job: 1
+[2026-02-02T06:50:55.017Z] INFO: Email sent successfully to admin@example.com | Subject: New Product Created
+[2026-02-02T06:50:55.025Z] INFO: Email job completed: 1
+[2026-02-02T07:00:02.449Z] INFO: Redis connected successfully
+[2026-02-02T07:00:02.484Z] INFO: Database connected
+[2026-02-02T07:00:02.488Z] INFO: Loading security middleware...
+[2026-02-02T07:00:02.492Z] INFO: ✔ Security middleware loaded successfully
+[2026-02-02T07:00:02.493Z] INFO: Middlewares loaded
+[2026-02-02T07:00:02.494Z] INFO: Routes mounted: API routes
+[2026-02-02T07:00:02.500Z] INFO: Server started on port 3000
+[2026-02-02T07:00:07.431Z] INFO: Redis connected successfully
+[2026-02-02T07:00:07.461Z] INFO: Database connected
+[2026-02-02T07:00:07.463Z] INFO: Loading security middleware...
+[2026-02-02T07:00:07.465Z] INFO: ✔ Security middleware loaded successfully
+[2026-02-02T07:00:07.465Z] INFO: Middlewares loaded
+[2026-02-02T07:00:07.466Z] INFO: Routes mounted: API routes
+[2026-02-02T07:00:07.471Z] INFO: Server started on port 3000
+[2026-02-02T07:02:19.602Z] INFO: Redis connected successfully
+[2026-02-02T07:02:19.639Z] INFO: Database connected
+[2026-02-02T07:02:19.643Z] INFO: Loading security middleware...
+[2026-02-02T07:02:19.648Z] INFO: ✔ Security middleware loaded successfully
+[2026-02-02T07:02:19.649Z] INFO: Middlewares loaded
+[2026-02-02T07:02:19.649Z] INFO: Routes mounted: API routes
+[2026-02-02T07:02:19.656Z] INFO: Server started on port 3000
+{"level":"info","message":"Redis connected successfully","timestamp":"2026-02-02T07:03:13.828Z"}
+{"level":"info","message":"Database connected","timestamp":"2026-02-02T07:03:13.863Z"}
+{"level":"info","message":"Loading security middleware...","timestamp":"2026-02-02T07:03:13.866Z"}
+{"level":"info","message":"✔ Security middleware loaded successfully","timestamp":"2026-02-02T07:03:13.871Z"}
+{"level":"info","message":"Middlewares loaded","timestamp":"2026-02-02T07:03:13.871Z"}
+{"level":"info","message":"Routes mounted: API routes","timestamp":"2026-02-02T07:03:13.872Z"}
+{"level":"info","message":"Server started on port 3000","timestamp":"2026-02-02T07:03:13.878Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2026-02-02T07:17:08.525Z"}
+{"level":"info","message":"Database connected","timestamp":"2026-02-02T07:17:08.575Z"}
+{"level":"info","message":"Loading security middleware...","timestamp":"2026-02-02T07:17:08.579Z"}
+{"level":"info","message":"✔ Security middleware loaded successfully","timestamp":"2026-02-02T07:17:08.584Z"}
+{"level":"info","message":"Middlewares loaded","timestamp":"2026-02-02T07:17:08.585Z"}
+{"level":"info","message":"Routes mounted: API routes","timestamp":"2026-02-02T07:17:08.585Z"}
+{"level":"info","message":"Server started on port 3000","timestamp":"2026-02-02T07:17:08.593Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2026-02-02T07:25:09.025Z"}
+{"level":"info","message":"Database connected","timestamp":"2026-02-02T07:25:09.084Z"}
+{"level":"info","message":"Loading security middleware...","timestamp":"2026-02-02T07:25:09.088Z"}
+{"level":"info","message":"✔ Security middleware loaded successfully","timestamp":"2026-02-02T07:25:09.093Z"}
+{"level":"info","message":"Middlewares loaded","timestamp":"2026-02-02T07:25:09.096Z"}
+{"level":"info","message":"Routes mounted: API routes","timestamp":"2026-02-02T07:25:09.096Z"}
+{"level":"info","message":"Server started on port 3000","timestamp":"2026-02-02T07:25:09.104Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2026-02-02T07:39:03.473Z"}
+{"level":"info","message":"Database connected","timestamp":"2026-02-02T07:39:03.507Z"}
+{"level":"info","message":"Loading security middleware...","timestamp":"2026-02-02T07:39:03.512Z"}
+{"level":"info","message":"✔ Security middleware loaded successfully","timestamp":"2026-02-02T07:39:03.516Z"}
+{"level":"info","message":"Middlewares loaded","timestamp":"2026-02-02T07:39:03.516Z"}
+{"level":"info","message":"Routes mounted: API routes","timestamp":"2026-02-02T07:39:03.517Z"}
+{"level":"info","message":"Server started on port 3000","timestamp":"2026-02-02T07:39:03.523Z"}
+{"errors":[{"field":"category","message":"Invalid category"}],"level":"warn","message":"Validation failed","path":"/api/products","property":"body","timestamp":"2026-02-02T07:56:31.696Z"}
+{"body":{"category":"electronics","description":"Latest Apple flagship smartphone","name":"iPhone 15 Pro","price":1199,"status":"active","stock":100,"tags":["apple","smartphone","5g"]},"level":"info","message":"Creating product","requestId":"9943afb8-8b38-4e56-b84f-7007a8f6e05f","timestamp":"2026-02-02T07:57:12.870Z"}
+{"level":"info","message":"Email job added to queue","timestamp":"2026-02-02T07:57:12.900Z"}
+{"level":"info","message":"Product created successfully","productId":"698058d864e4332027a92093","requestId":"9943afb8-8b38-4e56-b84f-7007a8f6e05f","timestamp":"2026-02-02T07:57:12.900Z"}
+{"level":"info","message":"Processing email job: 2","timestamp":"2026-02-02T07:57:12.907Z"}
+{"level":"info","message":"Email sent successfully to admin@example.com | Subject: New Product Created","timestamp":"2026-02-02T07:57:14.908Z"}
+{"level":"info","message":"Email job completed: 2","timestamp":"2026-02-02T07:57:14.911Z"}
+{"level":"info","message":"Fetching products","query":{"includeDeleted":false,"limit":10,"page":1},"requestId":"133553c1-8945-4e7a-b820-528835fa06a1","timestamp":"2026-02-02T08:00:26.113Z"}
+{"count":7,"level":"info","message":"Products fetched successfully","requestId":"133553c1-8945-4e7a-b820-528835fa06a1","timestamp":"2026-02-02T08:00:26.136Z"}
+{"level":"info","message":"Fetching products","query":{"includeDeleted":false,"limit":10,"page":1},"requestId":"385918d4-5383-46d8-8e74-df89df69b067","timestamp":"2026-02-02T08:03:32.442Z"}
+{"count":7,"level":"info","message":"Products fetched successfully","requestId":"385918d4-5383-46d8-8e74-df89df69b067","timestamp":"2026-02-02T08:03:32.450Z"}
+{"level":"info","message":"Fetching products","query":{"category":"electronics","includeDeleted":false,"limit":10,"maxPrice":1500,"minPrice":100,"page":1,"search":"phone","sort":"price:desc","tags":"apple,smartphone"},"requestId":"d74323ff-c514-467c-b209-80fbcd3236a2","timestamp":"2026-02-02T08:06:46.788Z"}
+{"count":2,"level":"info","message":"Products fetched successfully","requestId":"d74323ff-c514-467c-b209-80fbcd3236a2","timestamp":"2026-02-02T08:06:46.798Z"}
+{"level":"info","message":"Updating product","productId":"6980494c97da316aa94af97c","requestId":"30f6df7f-cd1a-4848-bcc0-606127cf78f2","timestamp":"2026-02-02T08:11:26.132Z","updates":{"price":1099,"stock":85}}
+{"level":"info","message":"Product updated successfully","productId":"6980494c97da316aa94af97c","requestId":"30f6df7f-cd1a-4848-bcc0-606127cf78f2","timestamp":"2026-02-02T08:11:26.143Z"}
+{"level":"info","message":"Soft deleting product","productId":"6980494c97da316aa94af97c","requestId":"a7b23dce-dbef-4216-8de6-de25d762d427","timestamp":"2026-02-02T08:13:00.324Z"}
+{"level":"info","message":"Product deleted successfully","productId":"6980494c97da316aa94af97c","requestId":"a7b23dce-dbef-4216-8de6-de25d762d427","timestamp":"2026-02-02T08:13:00.327Z"}
+{"level":"info","message":"Fetching products","query":{"includeDeleted":true,"limit":10,"page":1},"requestId":"83322c39-c430-4dc3-83dc-3dc206566416","timestamp":"2026-02-02T08:14:10.445Z"}
+{"count":7,"level":"info","message":"Products fetched successfully","requestId":"83322c39-c430-4dc3-83dc-3dc206566416","timestamp":"2026-02-02T08:14:10.454Z"}

@@ -1,5 +1,6 @@
 import productRepository from "../repositories/product.repository.js";
 import ApiError from "../utils/apiError.js";
+import { addEmailJob } from "../jobs/email.queue.js";
 
 const getProducts = async (query) => {
   const {
@@ -73,7 +74,16 @@ const getById = async (id) => {
 };
 
 const create = async (data) => {
-  return productRepository.create(data);
+  const product = await productRepository.create(data);
+
+  // 🔴 ASYNC BACKGROUND JOB (NON-BLOCKING)
+  await addEmailJob({
+    to: "admin@example.com",
+    subject: "New Product Created",
+    message: `Product "${product.name}" was created successfully`,
+  });
+
+  return product;
 };
 
 const update = async (id, data) => {
