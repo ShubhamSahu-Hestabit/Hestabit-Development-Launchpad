@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hestabit Secure Store | Full-Stack Capstone</title>
+    <style>
+        :root { 
+            --primary: #232f3e; 
+            --accent: #ff9900; 
+            --bg: #f0f2f5; 
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --hover-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg); 
+            margin: 0; 
+            padding: 0; 
+            color: #333;
+        }
+        
+        /* --- Navbar --- */
+        .navbar { 
+            background: var(--primary); 
+            color: white; 
+            padding: 1rem 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3); 
+        }
+        .status-badge { 
+            background: #28a745; 
+            font-size: 0.7rem; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        
+        /* --- Hero / DB Section --- */
+        .hero-section { 
+            padding: 2.5rem 5%; 
+            background: white; 
+            border-bottom: 1px solid #ddd; 
+            display: flex; 
+            gap: 3rem; 
+            align-items: flex-start; 
+        }
+        .form-box { 
+            flex: 1; 
+            background: var(--bg); 
+            padding: 2rem; 
+            border-radius: 15px; 
+            border: 1px solid #e0e0e0;
+        }
+        .form-box h3 { margin-top: 0; color: var(--primary); }
+        .form-box input { 
+            padding: 14px; 
+            width: 65%; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            font-size: 1rem;
+        }
+        .form-box button { 
+            padding: 14px 28px; 
+            background: var(--accent); 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+        }
+        .form-box button:hover { 
+            background: #e68a00; 
+            transform: scale(1.05);
+        }
+
+        /* --- Product Grid --- */
+        .container { padding: 3rem 5%; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 30px; 
+        }
+
+        /* --- PRODUCT CARD (The Hover Fix) --- */
+        .card { 
+            background: white; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative; 
+            cursor: pointer; 
+            border: 1px solid #efefef;
+            display: flex; 
+            flex-direction: column;
+            box-shadow: var(--card-shadow);
+        }
+        
+        /* The Actual Hover Effect */
+        .card:hover { 
+            transform: translateY(-12px); 
+            box-shadow: var(--hover-shadow); 
+            border-color: var(--accent);
+            z-index: 10;
+        }
+
+        .card img { 
+            width: 100%; 
+            height: 220px; 
+            object-fit: contain; 
+            background: #fff; 
+            padding: 10px;
+            transition: transform 0.5s ease;
+        }
+        .card:hover img {
+            transform: scale(1.08); /* Subtle zoom on hover */
+        }
+
+        .card-body { padding: 1.5rem; flex-grow: 1; }
+        .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+        .card-desc { font-size: 0.85rem; color: #666; line-height: 1.5; margin-bottom: 1.5rem; }
+        
+        .card-footer { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-top: 1px solid #f0f0f0; 
+            padding-top: 1rem;
+        }
+        .price { font-size: 1.4rem; font-weight: 800; color: #B12704; }
+        .rating { 
+            color: #ffa41c; 
+            font-size: 0.95rem; 
+            font-weight: bold; 
+            background: #fff9ed;
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+
+        .suggestion-list { 
+            max-height: 180px; 
+            overflow-y: auto; 
+            list-style: none; 
+            padding: 0; 
+            font-size: 0.9rem; 
+        }
+        .suggestion-list li { 
+            padding: 10px; 
+            border-bottom: 1px solid #eee; 
+            display: flex;
+            justify-content: space-between;
+        }
+        .timestamp { color: #999; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div>
+            <h2 style="margin:0; letter-spacing: 1px;">🚀 Hestabit Secure Store</h2>
+            <span class="status-badge">● SSL Termination Active</span>
+        </div>
+        <div id="stats" style="font-size: 1.1rem;">
+            Database Visits: <span id="visit-count" style="font-weight:bold; color:var(--accent)">0</span>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="form-box">
+            <h3>📦 Product Wishlist</h3>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">
+                Submit a product request directly to our <strong>MongoDB Database</strong>:
+            </p>
+            <form id="suggestionForm">
+                <input type="text" id="suggestInput" placeholder="What should we sell next?" required>
+                <button type="submit">Submit to DB</button>
+            </form>
+        </div>
+        <div style="flex: 1;">
+            <h3 style="color: var(--primary)">Recent Suggestions (Live DB)</h3>
+            <ul id="suggestionList" class="suggestion-list">
+                <!-- Suggestions injected here -->
+            </ul>
+        </div>
+    </section>
+
+    <div class="container">
+        <h2 style="margin-bottom: 2rem; border-left: 5px solid var(--accent); padding-left: 15px;">Featured Inventory</h2>
+        <div id="products" class="grid">
+            <!-- Products injected here -->
+        </div>
+    </div>
+
+    <script>
+        // 1. Load Products from API and Visit Count from MongoDB
+        async function loadStore() {
+            try {
+                const res = await fetch('/api/products');
+                const data = await res.json();
+                
+                document.getElementById('visit-count').innerText = data.totalVisits;
+                
+                document.getElementById('products').innerHTML = data.products.map(p => `
+                    <div class="card">
+                        <img src="${p.thumbnail}" alt="${p.title}">
+                        <div class="card-body">
+                            <div class="card-title">${p.title}</div>
+                            <div class="card-desc">${p.description.substring(0, 90)}...</div>
+                            <div class="card-footer">
+                                <span class="price">$${p.price}</span>
+                                <span class="rating">★ ${p.rating}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                document.getElementById('products').innerHTML = "<h2 style='color:red'>Critical Error: Backend Stack Unreachable</h2>";
+            }
+        }
+
+        // 2. Load Suggestions from local MongoDB
+        async function loadSuggestions() {
+            try {
+                const res = await fetch('/api/suggestions');
+                const list = await res.json();
+                document.getElementById('suggestionList').innerHTML = list.map(s => `
+                    <li>
+                        <strong>${s.text}</strong> 
+                        <span class="timestamp">${new Date(s.date).toLocaleTimeString()}</span>
+                    </li>
+                `).join('');
+            } catch (e) { console.error("Could not load suggestions"); }
+        }
+
+        // 3. POST Suggestion to MongoDB
+        document.getElementById('suggestionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = document.getElementById('suggestInput').value;
+            
+            await fetch('/api/suggestions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+            
+            document.getElementById('suggestInput').value = '';
+            loadSuggestions(); // Refresh the list from DB
+        });
+
+        // Initialize App
+        loadStore();
+        loadSuggestions();
+    </script>
+</body>
+</html>

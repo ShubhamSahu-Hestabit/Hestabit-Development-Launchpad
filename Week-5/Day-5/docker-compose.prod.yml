@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  capstone_db:
+    image: mongo:latest
+    container_name: capstone_db
+    restart: always
+    profiles: ["fullstack"] # <--- ADDED PROFILE
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+    logging: # <--- LOG ROTATION
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck: # <--- HEALTH CHECK
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      retries: 5
+
+  capstone_backend:
+    build: ./apps/backend
+    container_name: capstone_backend
+    restart: unless-stopped
+    profiles: ["fullstack"] # <--- ADDED PROFILE
+    environment:
+      MONGO_URI: ${MONGO_URI}
+    depends_on:
+      capstone_db:
+        condition: service_healthy
+    healthcheck: # <--- HEALTH CHECK
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+
+  capstone_frontend:
+    build: ./apps/frontend
+    container_name: capstone_frontend
+    restart: always
+    profiles: ["fullstack"] # <--- ADDED PROFILE
+    volumes:
+      - ./apps/frontend/index.html:/usr/share/nginx/html/index.html:ro
+
+  capstone_proxy:
+    image: nginx:latest
+    container_name: capstone_proxy
+    restart: always
+    profiles: ["fullstack"] # <--- ADDED PROFILE
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - capstone_backend
+
+volumes:
+  mongo_data: # <--- DOCKER VOLUME
