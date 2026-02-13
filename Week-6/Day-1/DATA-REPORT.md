@@ -6,6 +6,8 @@
 Prepare dataset for predicting Kickstarter campaign success.  
 Data cleaning, outlier handling, multicollinearity removal, and exploratory analysis.
 
+![Preprocess](images/Preprocess.png)
+
 **Dataset:** 30,000 rows × 8 columns after cleaning  
 
 **Target Distribution:**
@@ -68,8 +70,8 @@ Data cleaning, outlier handling, multicollinearity removal, and exploratory anal
 | usd_goal_real | Min $100, Max $250,000, Mean $8,450, Median $5,000 | Min $100, Max $32,250, Mean $8,450, Median $5,000 | Outliers capped |
 | campaign_duration | - | Min 1, Max 120, Mean 32, Median 30 | New feature |
 
-![Correlation Before](Correlation/correlation_before.png)
-![Correlation After](Correlation/correlation_after.png)
+![Correlation Before](images/correlation_before.png)
+![Correlation After](images/correlation_after.png)
 
 ### Categorical Features
 | Category | Count | % |
@@ -86,7 +88,6 @@ Data cleaning, outlier handling, multicollinearity removal, and exploratory anal
 | GB | 3,245 | 10.8% |
 | CA | 1,892 | 6.3% |
 
-![Correlation Matrix](correlation_matrix.png)
 
 ---
 
@@ -107,8 +108,6 @@ Data cleaning, outlier handling, multicollinearity removal, and exploratory anal
 | Theater | 59% |
 | Technology | 21% |
 
-![Goal vs Target](goal_vs_target.png)
-![Category Success](category_success.png)
 
 ---
 
