@@ -1,0 +1,120 @@
+2026-02-11 17:43:11,638 - INFO - Data pipeline started
+2026-02-11 17:43:11,639 - INFO - Loading raw dataset
+2026-02-11 17:43:11,727 - INFO - Dataset shape: (30000, 16)
+2026-02-11 17:43:11,727 - INFO - Columns: ['ID', 'name', 'category', 'main_category', 'currency', 'deadline', 'goal', 'launched', 'pledged', 'state', 'backers', 'country', 'usd pledged', 'usd_pledged_real', 'usd_goal_real', 'target']
+2026-02-11 17:43:11,729 - INFO - Data types:
+ID                    int64
+name                    str
+category                str
+main_category           str
+currency                str
+deadline                str
+goal                float64
+launched                str
+pledged             float64
+state                   str
+backers               int64
+country                 str
+usd pledged         float64
+usd_pledged_real    float64
+usd_goal_real       float64
+target                int64
+dtype: object
+2026-02-11 17:43:11,740 - INFO - Missing values:
+ID                   0
+name                 1
+category             0
+main_category        0
+currency             0
+deadline             0
+goal                 0
+launched             0
+pledged              0
+state                0
+backers              0
+country              0
+usd pledged         25
+usd_pledged_real     0
+usd_goal_real        0
+target               0
+dtype: int64
+2026-02-11 17:43:11,777 - INFO - Duplicate rows: 0
+2026-02-11 17:43:11,778 - INFO - Target distribution:
+target
+0    0.596133
+1    0.403867
+Name: proportion, dtype: float64
+2026-02-11 17:43:11,779 - INFO - Removed leakage columns: ['pledged', 'backers', 'usd pledged', 'usd_pledged_real']
+2026-02-11 17:43:11,805 - INFO - Removed duplicate rows: 0
+2026-02-11 17:43:11,820 - INFO - Missing values handled
+2026-02-11 17:43:11,823 - INFO - IQR capping applied on: usd_goal_real
+2026-02-11 17:43:11,956 - INFO - Cleaned dataset saved at: /home/shubhamsahu/Hestabit-Development Launchpad/Week-6/src/data/processed/kickstarter_cleaned.csv
+2026-02-11 17:43:11,956 - INFO - Data pipeline completed successfully
+2026-02-12 13:42:24,250 - INFO - Data pipeline started
+2026-02-12 13:42:24,250 - INFO - Loading raw dataset
+2026-02-12 13:42:24,350 - INFO - Dataset shape: (30000, 16)
+2026-02-12 13:42:24,351 - INFO - Columns: ['ID', 'name', 'category', 'main_category', 'currency', 'deadline', 'goal', 'launched', 'pledged', 'state', 'backers', 'country', 'usd pledged', 'usd_pledged_real', 'usd_goal_real', 'target']
+2026-02-12 13:42:24,352 - INFO - Data types:
+ID                    int64
+name                 object
+category             object
+main_category        object
+currency             object
+deadline             object
+goal                float64
+launched             object
+pledged             float64
+state                object
+backers               int64
+country              object
+usd pledged         float64
+usd_pledged_real    float64
+usd_goal_real       float64
+target                int64
+dtype: object
+2026-02-12 13:42:24,362 - INFO - Missing values per column:
+ID                   0
+name                 1
+category             0
+main_category        0
+currency             0
+deadline             0
+goal                 0
+launched             0
+pledged              0
+state                0
+backers              0
+country              0
+usd pledged         25
+usd_pledged_real     0
+usd_goal_real        0
+target               0
+dtype: int64
+2026-02-12 13:42:24,385 - INFO - Duplicate rows: 0
+2026-02-12 13:42:24,387 - INFO - Target distribution:
+target
+0    0.596133
+1    0.403867
+Name: proportion, dtype: float64
+2026-02-12 13:42:24,390 - INFO - Removed leakage columns: ['pledged', 'backers', 'usd pledged', 'usd_pledged_real']
+2026-02-12 13:42:24,409 - INFO - Removed duplicate rows: 0
+2026-02-12 13:42:24,413 - INFO - Filled missing numeric column 'ID' with median: 1065407706.5
+2026-02-12 13:42:24,414 - INFO - Filled missing numeric column 'goal' with median: 5000.0
+2026-02-12 13:42:24,415 - INFO - Filled missing numeric column 'usd_goal_real' with median: 5000.0
+2026-02-12 13:42:24,416 - INFO - Filled missing numeric column 'target' with median: 0.0
+2026-02-12 13:42:24,419 - INFO - Filled missing categorical column 'name' with 'Unknown'
+2026-02-12 13:42:24,420 - INFO - Filled missing categorical column 'category' with 'Unknown'
+2026-02-12 13:42:24,422 - INFO - Filled missing categorical column 'main_category' with 'Unknown'
+2026-02-12 13:42:24,424 - INFO - Filled missing categorical column 'currency' with 'Unknown'
+2026-02-12 13:42:24,425 - INFO - Filled missing categorical column 'deadline' with 'Unknown'
+2026-02-12 13:42:24,427 - INFO - Filled missing categorical column 'launched' with 'Unknown'
+2026-02-12 13:42:24,429 - INFO - Filled missing categorical column 'state' with 'Unknown'
+2026-02-12 13:42:24,432 - INFO - Filled missing categorical column 'country' with 'Unknown'
+2026-02-12 13:42:24,432 - INFO - Missing value handling completed
+2026-02-12 13:42:24,437 - INFO - IQR applied on 'ID' | Lower: -1077045947.25, Upper: 3216942578.75, Outliers capped: 0
+2026-02-12 13:42:24,441 - INFO - IQR applied on 'goal' | Lower: -17500.00, Upper: 34500.00, Outliers capped: 3668
+2026-02-12 13:42:24,445 - INFO - IQR applied on 'usd_goal_real' | Lower: -17500.00, Upper: 34500.00, Outliers capped: 3523
+2026-02-12 13:42:24,447 - INFO - IQR applied on 'target' | Lower: -1.50, Upper: 2.50, Outliers capped: 0
+2026-02-12 13:42:24,447 - INFO - Outlier capping completed
+2026-02-12 13:42:24,579 - INFO - Cleaned dataset saved at: /home/shubhamsahu/Hestabit-Development Launchpad/Week-6/src/data/processed/final.csv
+2026-02-12 13:42:24,579 - INFO - Data pipeline completed successfully
