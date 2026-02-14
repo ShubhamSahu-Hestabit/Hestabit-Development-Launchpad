@@ -2,27 +2,31 @@ import logging
 import json
 import os
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.feature_selection import mutual_info_classif
 
 from build_features import load_data, feature_engineering, build_pipeline
 
-# Logging
+
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
-# Correlation filter
+def to_dense(X):
+    if hasattr(X, "toarray"):
+        return X.toarray()
+    return np.array(X)
+
+
 def remove_correlated_features(X, feature_names, threshold=0.9):
 
     logger.info("Applying correlation threshold filter...")
 
-    if hasattr(X, "toarray"):
-        X = X.toarray()
+    X = to_dense(X)
 
     corr_matrix = np.corrcoef(X, rowvar=False)
-    upper_triangle = np.triu(np.ones(corr_matrix.shape), k=1).astype(bool)
 
     to_drop = set()
     for i in range(corr_matrix.shape[0]):
@@ -47,49 +51,74 @@ def main():
 
     X_train, X_test, y_train, y_test, feature_names = build_pipeline(df)
 
-    # Correlation filtering
-    X_corr, feature_names = remove_correlated_features(X_train, feature_names)
+    X_train = to_dense(X_train)
+    X_test = to_dense(X_test)
 
-    # Mutual Information
+    X_corr_train, feature_names_corr = remove_correlated_features(
+        X_train,
+        feature_names
+    )
+
+    X_corr_test = X_test[:, :X_corr_train.shape[1]]
+
     logger.info("Applying Mutual Information selection...")
-    mi_scores = mutual_info_classif(X_corr, y_train)
 
-    selected_indices = np.where(mi_scores > 0)[0]
+    mi_scores = mutual_info_classif(X_corr_train, y_train, random_state=42)
 
-    X_selected = X_corr[:, selected_indices]
-    final_features = feature_names[selected_indices]
+    # -------- TOP-K SELECTION (Recommended) --------
+    top_k = 10
+    selected_indices = np.argsort(mi_scores)[-top_k:]
 
-    logger.info(f"Final selected features: {len(final_features)}")
+    # -------- THRESHOLD METHOD (Optional - Commented) --------
+    # mi_threshold = 0.01
+    # selected_indices = np.where(mi_scores >= mi_threshold)[0]
+    # ----------------------------------------------------------
 
-    # Save feature list
+    X_selected_train = X_corr_train[:, selected_indices]
+    X_selected_test = X_corr_test[:, selected_indices]
+
+    final_features = feature_names_corr[selected_indices]
+
+    logger.info(f"Top K selected features: {len(final_features)}")
+
     os.makedirs("features", exist_ok=True)
+    os.makedirs("data/processed", exist_ok=True)
+    os.makedirs("reports", exist_ok=True)
+
     with open("features/feature_list.json", "w") as f:
         json.dump(list(final_features), f, indent=4)
 
-    # Save arrays
-    os.makedirs("data/processed", exist_ok=True)
-    np.save("data/processed/X_train.npy", X_selected)
+    np.save("data/processed/X_train.npy", X_selected_train)
+    np.save("data/processed/X_test.npy", X_selected_test)
     np.save("data/processed/y_train.npy", y_train)
-
-    X_test_selected = X_test[:, selected_indices]
-    np.save("data/processed/X_test.npy", X_test_selected)
     np.save("data/processed/y_test.npy", y_test)
 
-    # Plot feature importance
-    os.makedirs("reports", exist_ok=True)
+    X_full = np.concatenate([X_selected_train, X_selected_test], axis=0)
+    y_full = np.concatenate([y_train, y_test], axis=0)
+
+    np.save("data/processed/final_feature_matrix.npy", X_full)
+
+    df_final = pd.DataFrame(X_full, columns=final_features)
+    df_final["target"] = y_full
+    df_final.to_csv("data/processed/final_feature_matrix.csv", index=False)
+
+    logger.info("Saved final feature matrix (.npy and .csv)")
 
     sorted_idx = np.argsort(mi_scores[selected_indices])
+
     plt.figure()
-    plt.barh(range(len(sorted_idx)), mi_scores[selected_indices][sorted_idx])
-    plt.yticks(range(len(sorted_idx)), final_features[sorted_idx])
+    plt.barh(range(len(sorted_idx)),
+             mi_scores[selected_indices][sorted_idx])
+    plt.yticks(range(len(sorted_idx)),
+               final_features[sorted_idx])
     plt.xlabel("Mutual Information Score")
-    plt.title("Feature Importance")
+    plt.title("Top 10 Feature Importance (MI)")
     plt.tight_layout()
     plt.savefig("reports/feature_importance.png")
     plt.close()
 
     logger.info("Feature importance plot saved.")
-    logger.info("Day-2 Feature Engineering + Selection Completed Successfully.")
+    logger.info("Feature Engineering + Selection Completed Successfully.")
 
 
 if __name__ == "__main__":
