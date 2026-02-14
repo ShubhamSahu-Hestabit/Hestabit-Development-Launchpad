@@ -12,7 +12,7 @@
 
 ---
 
-## 🏆 Best Model: XGBoost
+##  Best Model: XGBoost
 
 ```
 ✓ Highest CV ROC-AUC: 0.673
