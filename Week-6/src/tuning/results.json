@@ -1,0 +1,15 @@
+{
+    "best_roc_auc": 0.6814463502249675,
+    "best_params": {
+        "n_estimators": 554,
+        "max_depth": 3,
+        "learning_rate": 0.04092545748397948,
+        "subsample": 0.8365069111584972,
+        "colsample_bytree": 0.7304364481617105,
+        "gamma": 0.2285427232762891,
+        "reg_alpha": 2.5880792554534047,
+        "reg_lambda": 1.2004033319574086
+    },
+    "reduced_feature_count": 7,
+    "scale_pos_weight": 1.4760136180748995
+}
