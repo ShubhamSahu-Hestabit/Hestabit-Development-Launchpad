@@ -244,3 +244,18 @@
 2026-02-14 23:39:32,614 - INFO - Metrics saved
 2026-02-14 23:39:32,817 - INFO - Confusion matrix saved
 2026-02-14 23:39:32,914 - INFO - ROC curve saved
+2026-02-16 14:11:33,741 - INFO - Model training pipeline started
+2026-02-16 14:11:33,748 - INFO - Training and test datasets loaded
+2026-02-16 14:11:33,749 - INFO - Training model: Logistic Regression
+2026-02-16 14:11:41,477 - INFO - Logistic Regression - CV ROC-AUC: 0.6526
+2026-02-16 14:11:41,477 - INFO - Training model: Random Forest
+2026-02-16 14:11:52,279 - INFO - Random Forest - CV ROC-AUC: 0.6664
+2026-02-16 14:11:52,279 - INFO - Training model: XGBoost
+2026-02-16 14:11:59,762 - INFO - XGBoost - CV ROC-AUC: nan
+2026-02-16 14:11:59,763 - INFO - Training model: LightGBM
+2026-02-16 14:12:19,365 - INFO - LightGBM - CV ROC-AUC: 0.6669
+2026-02-16 14:12:19,365 - INFO - Training model: Neural Network
+2026-02-16 14:12:41,540 - INFO - Neural Network - CV ROC-AUC: 0.6565
+2026-02-16 14:12:41,541 - INFO - Training model: Stacking Ensemble
+2026-02-16 14:53:22,937 - INFO - Stacking Ensemble - CV ROC-AUC: 0.6711
+2026-02-16 14:53:23,345 - INFO - Best model saved: Stacking Ensemble
