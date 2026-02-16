@@ -1,0 +1,18 @@
+{
+    "test_accuracy": 0.66,
+    "test_precision": 0.5781951817068192,
+    "test_recall": 0.5843995047461824,
+    "test_f1": 0.5812807881773399,
+    "test_roc_auc": 0.7093527905794241,
+    "best_params": {
+        "n_estimators": 483,
+        "max_depth": 4,
+        "learning_rate": 0.09330606024425668,
+        "num_leaves": 70,
+        "min_child_samples": 18,
+        "subsample": 0.6727299868828402,
+        "colsample_bytree": 0.6733618039413735,
+        "reg_alpha": 0.6084844859190754,
+        "reg_lambda": 1.0495128632644757
+    }
+}
