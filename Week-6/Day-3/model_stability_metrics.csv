@@ -1,19 +1,19 @@
-Category,KPIs,Logistic Regression,Random Forest,XGBoost,Neural Network,Stacking Ensemble
-Stability Metrics,CV ROC-AUC,0.653,0.665,0.673,0.657,0.672
-Stability Metrics,Test ROC-AUC,0.606,0.555,0.559,0.579,0.566
-Stability Metrics,ROC-AUC Drop,0.047,0.11,0.114,0.078,0.106
-Stability Metrics,Stability Score,92.80%,83.46%,83.06%,88.13%,84.23%
-Performance Metrics,CV Accuracy,0.598,0.609,0.62,0.604,0.615
-Performance Metrics,Test Accuracy,0.547,0.531,0.514,0.572,0.516
-Performance Metrics,Accuracy Drop,0.051,0.078,0.106,0.032,0.099
-Performance Metrics,CV Precision,0.502,0.512,0.524,0.509,0.519
-Performance Metrics,Test Precision,0.458,0.448,0.441,0.474,0.443
-Performance Metrics,CV Recall,0.659,0.668,0.644,0.645,0.656
-Performance Metrics,Test Recall,0.675,0.702,0.762,0.564,0.764
-Performance Metrics,CV F1-Score,0.57,0.58,0.578,0.567,0.58
-Performance Metrics,Test F1-Score,0.546,0.547,0.559,0.515,0.56
-Model Characteristics,Complexity,Low,High,High,Medium,Very High
-Model Characteristics,Training Time,Fast,Medium,Medium,Slow,Slow
-Model Characteristics,Interpretability,High,Medium,Medium,Low,Low
-Model Characteristics,Deployment Ease,Easy,Medium,Medium,Hard,Hard
-Model Characteristics,Best For,Interpretability,Feature Importance,High Recall,Complex Patterns,Ensemble Power
+Category,KPIs,Logistic Regression,Random Forest,Neural Network,LightGBM
+Stability Metrics,CV ROC-AUC,0.688,0.716,0.705,0.761
+Stability Metrics,Test ROC-AUC,0.690,0.704,0.700,0.714
+Stability Metrics,ROC-AUC Drop,-0.002,0.012,0.005,0.047
+Stability Metrics,Stability Score,99.71%,98.32%,99.29%,93.83%
+Performance Metrics,CV Accuracy,0.636,0.657,0.650,0.687
+Performance Metrics,Test Accuracy,0.638,0.644,0.637,0.663
+Performance Metrics,Accuracy Drop,-0.002,0.013,0.013,0.024
+Performance Metrics,CV Precision,0.632,0.646,0.633,0.685
+Performance Metrics,Test Precision,0.543,0.548,0.539,0.575
+Performance Metrics,CV Recall,0.649,0.696,0.717,0.693
+Performance Metrics,Test Recall,0.657,0.679,0.694,0.629
+Performance Metrics,CV F1-Score,0.641,0.670,0.672,0.689
+Performance Metrics,Test F1-Score,0.595,0.607,0.607,0.601
+Model Characteristics,Complexity,Low,High,Medium,High
+Model Characteristics,Training Time,Fast,Medium,Slow,Fast
+Model Characteristics,Interpretability,High,Medium,Low,Medium
+Model Characteristics,Deployment Ease,Easy,Medium,Hard,Medium
+Model Characteristics,Best For,Interpretability,Feature Importance,Complex Patterns,Best Overall

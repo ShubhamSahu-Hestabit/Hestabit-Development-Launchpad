@@ -6,3 +6,16 @@ seaborn==0.13.0
 scipy==1.11.4
 jupyter==1.0.0
 ipykernel==6.28.0
+scikit-learn
+xgboost
+joblib
+fastapi
+uvicorn
+pydantic
+pandas
+numpy
+scikit-learn
+lightgbm
+joblib
+streamlit
+matplotlib
