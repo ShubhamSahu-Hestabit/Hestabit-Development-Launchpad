@@ -69,7 +69,7 @@ target = 1 if state == "successful" else 0
   ------------------------------------------ ---------------
   After Encoding                             225
   After Correlation Filter (0.9 threshold)   208
-  After Mutual Information (Top-10)          10
+  After Mutual Information (Top-25)          25
 
 ------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ target = 1 if state == "successful" else 0
 
 Final strategy used:
 
-Top 10 features based on Mutual Information score
+Top 25 features based on Mutual Information score
 
 ------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ Top 10 features based on Mutual Information score
   cat\_\_main_category_Music
 
 ------------------------------------------------------------------------
-![Day-2 Feature Engineering Summary](images/importance.png)
+![Day-2 Feature Engineering Summary](images/feature_importance.png)
 
 
 # 7️⃣ Saved Artifacts

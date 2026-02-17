@@ -9,18 +9,15 @@ import seaborn as sns
 from sklearn.cluster import KMeans
 from sklearn.metrics import confusion_matrix
 
-# ============================
 # PATHS
-# ============================
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data", "processed")  # Processed data folder
 MODEL_PATH = os.path.join(BASE_DIR, "models", "best_lgbm_model.pkl")  # From tuning
 EVAL_DIR = os.path.join(BASE_DIR, "evaluation")
 os.makedirs(EVAL_DIR, exist_ok=True)
 
-# ============================
 # LOAD DATA
-# ============================
 X_test = np.load(os.path.join(DATA_DIR, "X_test.npy"))
 y_test = np.load(os.path.join(DATA_DIR, "y_test.npy"))
 
@@ -31,14 +28,11 @@ if os.path.exists(FEATURE_NAMES_PATH):
 else:
     feature_names = [f"Feature {i+1}" for i in range(X_test.shape[1])]
 
-# ============================
 # LOAD MODEL
-# ============================
 model = joblib.load(MODEL_PATH)
 
-# ============================
 # SHAP EXPLAINER
-# ============================
+
 explainer = shap.Explainer(model, X_test)
 shap_values = explainer(X_test)
 
@@ -48,10 +42,8 @@ shap.summary_plot(shap_values, X_test, feature_names=feature_names, show=False)
 plt.tight_layout()
 plt.savefig(os.path.join(EVAL_DIR, "shap_summary.png"))
 plt.close()
-
-# ============================
 # FEATURE IMPORTANCE
-# ============================
+
 importances = model.feature_importances_
 indices = np.argsort(importances)[::-1]
 
@@ -63,9 +55,8 @@ plt.tight_layout()
 plt.savefig(os.path.join(EVAL_DIR, "feature_importance.png"))
 plt.close()
 
-# ============================
 # ERROR ANALYSIS
-# ============================
+
 y_pred = model.predict(X_test)
 errors = X_test[y_pred != y_test]
 
