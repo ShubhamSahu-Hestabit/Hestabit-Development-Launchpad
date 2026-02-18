@@ -1,88 +1,135 @@
-import pandas as pd
-import numpy as np
+# src/features/build_features.py
+
+import os
+import joblib
 import logging
+import numpy as np
+import pandas as pd
+
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+# ============================
+# PATHS
+# ============================
 
-def load_data():
-    df = pd.read_csv("/home/shubhamsahu/Hestabit-Development Launchpad/Week-6/src/data/processed/final.csv")
-    logger.info(f"Loaded data: {df.shape}")
-    return df
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_PATH = os.path.join(BASE_DIR, "data", "processed", "final.csv")
+ARTIFACT_DIR = os.path.join(BASE_DIR, "artifacts")
+
+os.makedirs(ARTIFACT_DIR, exist_ok=True)
 
 
-def create_basic_features(df):
-    """
-    Create features that DON'T require target information.
-    Safe for both training and inference.
-    """
-    df = df.copy()
+# ============================
+# FEATURE BUILDER CLASS
+# ============================
 
-    if "state" in df.columns:
-        df["target"] = (df["state"] == "successful").astype(int)
+class FeatureBuilder:
 
-    # Remove leakage columns if they exist
-    drop = [
-        "state",
-        "pledged",
-        "usd pledged",
-        "usd_pledged_real",
-        "backers",
-        "ID",
-        "name"
-    ]
-    df = df.drop(columns=[c for c in drop if c in df.columns])
+    def __init__(self):
+        self.cat_mapping = None
+        self.country_mapping = None
+        self.global_mean = None
 
-    # Dates
-    df["launched"] = pd.to_datetime(df["launched"])
-    df["deadline"] = pd.to_datetime(df["deadline"])
+    def create_basic_features(self, df):
 
-    df["campaign_duration"] = (df["deadline"] - df["launched"]).dt.days
-    df["launch_month"] = df["launched"].dt.month
-    df["launch_weekday"] = df["launched"].dt.weekday
-    df["launch_year"] = df["launched"].dt.year
+        df = df.copy()
 
-    # Flags
-    df["is_weekend"] = df["launch_weekday"].isin([5, 6]).astype(int)
-    df["is_short"] = (df["campaign_duration"] < 30).astype(int)
+        if "state" in df.columns:
+            df["target"] = (df["state"] == "successful").astype(int)
 
-    # Goal transformations
-    df["goal_log"] = np.log1p(df["goal"])
-    df["goal_per_day"] = df["goal"] / (df["campaign_duration"] + 1)
+        drop_cols = [
+            "state", "pledged", "usd pledged",
+            "usd_pledged_real", "backers",
+            "ID", "name"
+        ]
+        df = df.drop(columns=[c for c in drop_cols if c in df.columns])
 
-    # Important: median will behave correctly for single-row inference
-    median_goal = df["goal"].median()
-    df["high_goal_short"] = (
-        (df["goal"] > median_goal) &
-        (df["campaign_duration"] < 30)
-    ).astype(int)
+        df["launched"] = pd.to_datetime(df["launched"])
+        df["deadline"] = pd.to_datetime(df["deadline"])
 
-    # Cyclical month encoding
-    df["month_sin"] = np.sin(2 * np.pi * df["launch_month"] / 12)
-    df["month_cos"] = np.cos(2 * np.pi * df["launch_month"] / 12)
+        df["campaign_duration"] = (df["deadline"] - df["launched"]).dt.days
+        df["launch_month"] = df["launched"].dt.month
+        df["launch_weekday"] = df["launched"].dt.weekday
+        df["launch_year"] = df["launched"].dt.year
 
-    # Drop raw date columns
-    df = df.drop(columns=["launched", "deadline"])
+        df["is_weekend"] = df["launch_weekday"].isin([5, 6]).astype(int)
+        df["is_short"] = (df["campaign_duration"] < 30).astype(int)
 
-    return df
+        df["goal_log"] = np.log1p(df["goal"])
+        df["goal_per_day"] = df["goal"] / (df["campaign_duration"] + 1)
 
+        median_goal = df["goal"].median()
+        df["high_goal_short"] = (
+            (df["goal"] > median_goal) &
+            (df["campaign_duration"] < 30)
+        ).astype(int)
+
+        df["month_sin"] = np.sin(2 * np.pi * df["launch_month"] / 12)
+        df["month_cos"] = np.cos(2 * np.pi * df["launch_month"] / 12)
+
+        df = df.drop(columns=["launched", "deadline"])
+
+        return df
+
+    def fit(self, df):
+
+        df = self.create_basic_features(df)
+
+        X = df.drop(columns=["target"])
+        y = df["target"]
+
+        self.global_mean = y.mean()
+
+        self.cat_mapping = (
+            X.assign(target=y)
+            .groupby("main_category")["target"]
+            .mean()
+            .to_dict()
+        )
+
+        self.country_mapping = (
+            X.assign(target=y)
+            .groupby("country")["target"]
+            .mean()
+            .to_dict()
+        )
+
+        return self
+
+    def transform(self, df):
+
+        df = self.create_basic_features(df)
+
+        df["cat_rate"] = df["main_category"].map(self.cat_mapping).fillna(self.global_mean)
+        df["country_rate"] = df["country"].map(self.country_mapping).fillna(self.global_mean)
+
+        if "target" in df.columns:
+            X = df.drop(columns=["target"])
+            y = df["target"]
+            return X, y
+
+        return df
+
+
+# ============================
+# BUILD PIPELINE
+# ============================
 
 def build_pipeline(df):
-    """
-    Build pipeline with ZERO leakage.
-    Target encoding happens AFTER split.
-    """
-    df = create_basic_features(df)
 
-    X = df.drop(columns=["target"])
-    y = df["target"]
+    feature_builder = FeatureBuilder()
+    feature_builder.fit(df)
 
-    logger.info("Splitting data...")
+    joblib.dump(feature_builder, os.path.join(ARTIFACT_DIR, "feature_builder.pkl"))
+    logger.info("Saved feature_builder.pkl")
+
+    X, y = feature_builder.transform(df)
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
         test_size=0.2,
@@ -90,23 +137,8 @@ def build_pipeline(df):
         stratify=y
     )
 
-    logger.info("Adding target-encoded features (train only)...")
-
-    # Target encoding for main_category
-    if "main_category" in X_train.columns:
-        cat_rates = X_train.assign(target=y_train).groupby("main_category")["target"].mean()
-        X_train["cat_rate"] = X_train["main_category"].map(cat_rates).fillna(y_train.mean())
-        X_test["cat_rate"] = X_test["main_category"].map(cat_rates).fillna(y_train.mean())
-
-    # Target encoding for country
-    if "country" in X_train.columns:
-        country_rates = X_train.assign(target=y_train).groupby("country")["target"].mean()
-        X_train["country_rate"] = X_train["country"].map(country_rates).fillna(y_train.mean())
-        X_test["country_rate"] = X_test["country"].map(country_rates).fillna(y_train.mean())
-
-    # Preprocessing
     numeric_cols = X_train.select_dtypes(include=[np.number]).columns.tolist()
-    categorical_cols = X_train.select_dtypes(include=["object", "category"]).columns.tolist()
+    categorical_cols = X_train.select_dtypes(include=["object"]).columns.tolist()
 
     preprocessor = ColumnTransformer([
         ("num", StandardScaler(), numeric_cols),
@@ -116,12 +148,29 @@ def build_pipeline(df):
     X_train_processed = preprocessor.fit_transform(X_train)
     X_test_processed = preprocessor.transform(X_test)
 
-    logger.info(f"Final: Train {X_train_processed.shape}, Test {X_test_processed.shape}")
+    joblib.dump(preprocessor, os.path.join(ARTIFACT_DIR, "preprocessor.pkl"))
+    logger.info("Saved preprocessor.pkl")
 
-    return (
-        X_train_processed,
-        X_test_processed,
-        y_train.values,
-        y_test.values,
-        preprocessor.get_feature_names_out()
-    )
+    return X_train_processed, X_test_processed, y_train.values, y_test.values
+
+
+# ============================
+# MAIN
+# ============================
+
+def main():
+
+    df = pd.read_csv(DATA_PATH)
+
+    X_train, X_test, y_train, y_test = build_pipeline(df)
+
+    np.save(os.path.join(BASE_DIR, "data", "processed", "X_train.npy"), X_train)
+    np.save(os.path.join(BASE_DIR, "data", "processed", "X_test.npy"), X_test)
+    np.save(os.path.join(BASE_DIR, "data", "processed", "y_train.npy"), y_train)
+    np.save(os.path.join(BASE_DIR, "data", "processed", "y_test.npy"), y_test)
+
+    logger.info("Build stage completed successfully.")
+
+
+if __name__ == "__main__":
+    main()

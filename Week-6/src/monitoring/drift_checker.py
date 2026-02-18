@@ -1,28 +1,32 @@
 import os
 import pandas as pd
+import numpy as np
+from scipy.stats import ks_2samp
 
-LOG_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs", "prediction_logs.csv")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REFERENCE_DATA = os.path.join(BASE_DIR, "data", "processed", "final.csv")
+LOG_FILE = os.path.join(BASE_DIR, "..", "prediction_logs.csv")
+
 
 def check_drift():
 
     if not os.path.exists(LOG_FILE):
-        print("No logs found.")
+        print("No predictions logged yet.")
         return
 
-    df = pd.read_csv(LOG_FILE)
+    reference_df = pd.read_csv(REFERENCE_DATA)
+    production_df = pd.read_csv(LOG_FILE)
 
-    if len(df) < 5:
-        print("Not enough predictions.")
-        return
+    numeric_cols = reference_df.select_dtypes(include=[np.number]).columns
 
-    mean_prob = df["probability"].mean()
+    print("\n=== DATA DRIFT REPORT ===\n")
 
-    print(f"Mean Probability: {mean_prob:.4f}")
+    for col in numeric_cols:
+        if col in production_df.columns:
+            stat, p_value = ks_2samp(
+                reference_df[col].dropna(),
+                production_df[col].dropna()
+            )
 
-    if mean_prob > 0.9 or mean_prob < 0.1:
-        print("[ALERT] Possible Drift!")
-    else:
-        print("Model Stable.")
-
-if __name__ == "__main__":
-    check_drift()
+            if p_value < 0.05:
+                print(f"Drift detected in: {col}")
