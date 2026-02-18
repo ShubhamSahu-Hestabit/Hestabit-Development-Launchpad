@@ -41,8 +41,26 @@ joblib.dump(best_model, "best_lgbm_model.pkl")
 ```
 
 ------------------------------------------------------------------------
+## 3.Artifacts & Inference
+import joblib
 
-# 3. Inference Wrapper Architecture
+preprocessor = joblib.load("models/preprocessor.pkl")
+scaler = joblib.load("models/scaler.pkl")
+model = joblib.load("models/best_lgbm_model.pkl")
+
+X_processed = preprocessor.transform(raw_input)
+X_scaled = scaler.transform(X_processed)
+prediction = model.predict(X_scaled)
+probability = model.predict_proba(X_scaled)[:,1]
+
+
+------------------------------------------------------------------------
+
+# 4. Alternative Production Approach
+
+File: src/pipelines/inference_pipeline.py
+chose a manual wrapper for greater flexibility and control.
+
 
 File: src/pipelines/inference_pipeline.py
 
@@ -55,7 +73,6 @@ without consistent preprocessing can cause:
 -   Encoding inconsistency
 -   Training-serving skew
 -   Silent production errors
-
 ## What the Wrapper Does
 
 1.  Loads trained model
@@ -65,29 +82,6 @@ without consistent preprocessing can cause:
 5.  Returns prediction and probability
 
 This ensures safe and consistent inference.
-
-------------------------------------------------------------------------
-
-# 4. Alternative Production Approach
-
-An alternative design is saving the full preprocessing + model pipeline:
-
-``` python
-full_pipeline = Pipeline([
-    ("preprocessor", preprocessor),
-    ("model", lgbm_model)
-])
-
-joblib.dump(full_pipeline, "full_pipeline.pkl")
-```
-
-Then in API:
-
-``` python
-pipeline.predict(raw_input)
-```
-
-We chose a manual wrapper for greater flexibility and control.
 
 ------------------------------------------------------------------------
 
@@ -103,11 +97,14 @@ POST /predict
 
 ``` json
 {
-  "goal": 12000,
-  "main_category": "Technology",
-  "country": "US",
-  "launched": "2017-03-01",
-  "deadline": "2017-04-01"
+    "category": "technology",
+    "main_category": "Gadgets",
+    "currency": "USD",
+    "deadline": "2026-12-31",
+    "goal": 10000,
+    "launched": "2026-11-01",
+    "country": "US",
+    "usd_goal_real": 10000
 }
 ```
 
@@ -115,10 +112,10 @@ POST /predict
 
 ``` json
 {
-  "request_id": "uuid",
-  "model_version": "v1",
+  "request_id": "97637c49-1c0b-4eaf-b5fa-109703afaa86",
+  "model_version": "v1.0",
   "prediction": 1,
-  "probability": 0.89
+  "probability_success": 0.7364
 }
 ```
 

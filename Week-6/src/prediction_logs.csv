@@ -1,0 +1,2 @@
+request_id,timestamp,model_version,prediction,probability,category,main_category,currency,deadline,goal,launched,country,usd_goal_real
+97637c49-1c0b-4eaf-b5fa-109703afaa86,2026-02-18T09:57:30.885137,v1.0,1,0.7364045858734282,technology,Gadgets,USD,2026-12-31,10000.0,2026-11-01,US,10000.0
