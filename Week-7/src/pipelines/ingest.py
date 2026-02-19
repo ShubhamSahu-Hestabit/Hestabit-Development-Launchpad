@@ -1,7 +1,7 @@
 import os
 import sys
-import uuid
 import sqlite3
+import hashlib
 from datetime import datetime
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -26,6 +26,9 @@ class IngestionPipeline:
         self.chunked_docs = []
         self.embedding_manager = EmbeddingManager()
 
+    # ---------------------------
+    # File Loader Router
+    # ---------------------------
     def _load_file(self, file_path):
         if file_path.endswith(".pdf"):
             loader = PyPDFLoader(file_path)
@@ -40,6 +43,9 @@ class IngestionPipeline:
             return []
         return loader.load()
 
+    # ---------------------------
+    # Load Documents
+    # ---------------------------
     def load_documents(self):
         print("Loading documents...")
         for file in os.listdir(self.data_dir):
@@ -48,6 +54,9 @@ class IngestionPipeline:
             self.documents.extend(docs)
         print(f"Loaded {len(self.documents)} pages.")
 
+    # ---------------------------
+    # Clean Text
+    # ---------------------------
     def clean_documents(self):
         print("Cleaning documents...")
         for doc in self.documents:
@@ -55,6 +64,9 @@ class IngestionPipeline:
             text = " ".join(text.split())
             doc.page_content = text
 
+    # ---------------------------
+    # Chunk Documents (Deterministic IDs)
+    # ---------------------------
     def chunk_documents(self):
         print("Chunking documents...")
         splitter = RecursiveCharacterTextSplitter(
@@ -64,13 +76,24 @@ class IngestionPipeline:
 
         chunks = splitter.split_documents(self.documents)
 
-        for chunk in chunks:
-            chunk.metadata["chunk_id"] = str(uuid.uuid4())
+        for idx, chunk in enumerate(chunks):
+            base_string = (
+                chunk.page_content +
+                str(chunk.metadata.get("source", "")) +
+                str(chunk.metadata.get("page", ""))
+            )
+
+            chunk_hash = hashlib.md5(base_string.encode()).hexdigest()
+            chunk.metadata["chunk_id"] = chunk_hash
+            chunk.metadata["chunk_index"] = idx
             chunk.metadata["ingested_at"] = str(datetime.utcnow())
 
         self.chunked_docs = chunks
         print(f"Created {len(self.chunked_docs)} chunks.")
 
+    # ---------------------------
+    # Save Chunks to SQLite
+    # ---------------------------
     def save_chunks_to_sqlite(self):
         print("Saving chunks to SQLite...")
         os.makedirs("src/data/chunks", exist_ok=True)
@@ -84,24 +107,29 @@ class IngestionPipeline:
             text TEXT,
             source TEXT,
             page INTEGER,
+            chunk_index INTEGER,
             ingested_at TEXT
         )
         """)
 
         for chunk in self.chunked_docs:
             cursor.execute("""
-            INSERT OR REPLACE INTO chunks VALUES (?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO chunks VALUES (?, ?, ?, ?, ?, ?)
             """, (
                 chunk.metadata["chunk_id"],
                 chunk.page_content,
                 chunk.metadata.get("source", ""),
                 chunk.metadata.get("page", 0),
+                chunk.metadata.get("chunk_index", 0),
                 chunk.metadata["ingested_at"]
             ))
 
         conn.commit()
         conn.close()
 
+    # ---------------------------
+    # Create FAISS Vector Store
+    # ---------------------------
     def create_vectorstore(self):
         print("Creating FAISS index...")
         embeddings = self.embedding_manager.get_model()
@@ -114,6 +142,9 @@ class IngestionPipeline:
         vectorstore.save_local(self.vectorstore_dir)
         print("FAISS index saved.")
 
+    # ---------------------------
+    # Run Full Pipeline
+    # ---------------------------
     def run(self):
         self.load_documents()
         self.clean_documents()
