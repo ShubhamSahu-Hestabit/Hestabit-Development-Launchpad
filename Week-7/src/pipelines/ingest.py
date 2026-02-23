@@ -2,6 +2,7 @@ import os
 import sys
 import sqlite3
 import hashlib
+import re
 from datetime import datetime
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -65,7 +66,16 @@ class IngestionPipeline:
             doc.page_content = text
 
     # ---------------------------
-    # Chunk Documents (Deterministic IDs)
+    # Extract Year from filename
+    # ---------------------------
+    def _extract_year(self, source):
+        match = re.search(r"(20\d{2})", source)
+        if match:
+            return match.group(1)
+        return "unknown"
+
+    # ---------------------------
+    # Chunk Documents (Deterministic IDs + Metadata)
     # ---------------------------
     def chunk_documents(self):
         print("Chunking documents...")
@@ -84,9 +94,17 @@ class IngestionPipeline:
             )
 
             chunk_hash = hashlib.md5(base_string.encode()).hexdigest()
+
+            source = chunk.metadata.get("source", "")
+            file_ext = os.path.splitext(source)[-1].replace(".", "").lower()
+
             chunk.metadata["chunk_id"] = chunk_hash
             chunk.metadata["chunk_index"] = idx
             chunk.metadata["ingested_at"] = str(datetime.utcnow())
+
+            # 🔥 NEW METADATA FIELDS
+            chunk.metadata["year"] = self._extract_year(source)
+            chunk.metadata["type"] = file_ext
 
         self.chunked_docs = chunks
         print(f"Created {len(self.chunked_docs)} chunks.")
@@ -108,20 +126,25 @@ class IngestionPipeline:
             source TEXT,
             page INTEGER,
             chunk_index INTEGER,
-            ingested_at TEXT
+            ingested_at TEXT,
+            year TEXT,
+            type TEXT
         )
         """)
 
         for chunk in self.chunked_docs:
             cursor.execute("""
-            INSERT OR REPLACE INTO chunks VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO chunks 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 chunk.metadata["chunk_id"],
                 chunk.page_content,
                 chunk.metadata.get("source", ""),
                 chunk.metadata.get("page", 0),
                 chunk.metadata.get("chunk_index", 0),
-                chunk.metadata["ingested_at"]
+                chunk.metadata["ingested_at"],
+                chunk.metadata.get("year", "unknown"),
+                chunk.metadata.get("type", "unknown"),
             ))
 
         conn.commit()
