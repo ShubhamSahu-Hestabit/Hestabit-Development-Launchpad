@@ -80,7 +80,7 @@ def process_single_image(path, embeddings, cursor):
     # truncate OCR manually for safety
     ocr_emb = clip_embedder.embed_text(ocr_text[:500] if ocr_text else " ")
 
-    combined_embedding = (image_emb + caption_emb + ocr_emb) / 3.0
+    combined_embedding = (0.4 * image_emb + 0.3 * caption_emb + 0.3 * ocr_emb)
     embeddings.append(combined_embedding)
 
     cursor.execute("""
