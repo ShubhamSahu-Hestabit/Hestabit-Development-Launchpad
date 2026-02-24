@@ -1,2 +1,4 @@
-.venv
 src/.env
+src/data/enterprise.db
+.venv/
+__pycache__/
