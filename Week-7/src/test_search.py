@@ -1,68 +1,79 @@
-import faiss
-import sqlite3
-import numpy as np
-from src.embeddings.clip_embedder import CLIPEmbedder
+import sys
+import os
 
+# Fix path
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, ROOT_DIR)
 
-FAISS_PATH = "src/vectorstore/image_index.faiss"
-DB_PATH = "src/vectorstore/image_metadata.db"
+from src.retriever.image_search import search_by_text, search_by_image, image_to_text_answer
 
-clip_embedder = CLIPEmbedder()
-index = faiss.read_index(FAISS_PATH)
+BASE_DIR = ROOT_DIR
+IMAGE_PATH = os.path.join(BASE_DIR, "src", "data", "images", "system_design3.jpeg")
 
+# ── 1. Text → Image ──────────────────────────────────────────
+print("=" * 40)
+print("TEXT → IMAGE SEARCH")
+print("=" * 40)
+results = search_by_text("pie chart percentage", top_k=3)
+if not results:
+    print("No results found")
+for r in results:
+    print("\n---")
+    print("Path:   ", r["path"])
+    print("Caption:", r["caption"])
+    print("OCR:    ", r["ocr_text"])
 
-def get_metadata_by_ids(ids):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+# ── 2. Image → Image ─────────────────────────────────────────
+print("\n" + "=" * 40)
+print("IMAGE → IMAGE SEARCH")
+print("=" * 40)
+print("Using image:", IMAGE_PATH)
+results = search_by_image(IMAGE_PATH, top_k=3)
+if not results:
+    print("No results found")
+for r in results:
+    print("\n---")
+    print("Path:   ", r["path"])
+    print("Caption:", r["caption"])
+    print("OCR:    ", r["ocr_text"])
 
-    results = []
+# ── 3. Image → Text ──────────────────────────────────────────
+print("\n" + "=" * 40)
+print("IMAGE → TEXT ANSWER")
+print("=" * 40)
+context = image_to_text_answer(IMAGE_PATH, top_k=3)
+if not context.strip():
+    print("No context found")
+else:
+    print(context)
+    
+# ── 4. PDF Page → Image Search ───────────────────────────────
+print("\n" + "=" * 40)
+print("PDF PAGE → IMAGE SEARCH")
+print("=" * 40)
 
-    for idx in ids:
-        # FAISS is 0-based, DB is 1-based so +1 is correct
-        # but let's debug by printing what we're querying
-        db_id = int(idx) + 1
-        print(f"  [DEBUG] FAISS idx={idx} → querying DB id={db_id}")
-        cursor.execute(
-            "SELECT path, caption, ocr_text FROM images WHERE id = ?",
-            (db_id,)
-        )
-        row = cursor.fetchone()
-        print(f"  [DEBUG] Row found: {row}")
+PDF_IMAGE_PATH = os.path.join(BASE_DIR, "src", "data", "images", "piechart2.pdf_page_0.png")
+print("Using PDF page image:", PDF_IMAGE_PATH)
 
-        if row:
-            results.append({
-                "path": row[0],
-                "caption": row[1],
-                "ocr_text": row[2]
-            })
+results = search_by_image(PDF_IMAGE_PATH, top_k=3)
+if not results:
+    print("No results found")
+for r in results:
+    print("\n---")
+    print("Path:   ", r["path"])
+    print("Caption:", r["caption"])
+    print("OCR:    ", r["ocr_text"])
 
-    conn.close()
-    return results
+# ── 5. Text query matching PDF content ───────────────────────
+print("\n" + "=" * 40)
+print("TEXT QUERY → PDF CONTENT")
+print("=" * 40)
 
-
-def search_by_text(query, top_k=3):
-    query_emb = clip_embedder.embed_text(query)
-    query_emb = np.array([query_emb]).astype("float32")
-
-    distances, indices = index.search(query_emb, top_k)
-    print(f"[DEBUG] Raw FAISS indices: {indices[0]}")
-    return get_metadata_by_ids(indices[0])
-
-
-def search_by_image(image_path, top_k=3):
-    query_emb = clip_embedder.embed_image(image_path)
-    query_emb = np.array([query_emb]).astype("float32")
-
-    distances, indices = index.search(query_emb, top_k)
-    print(f"[DEBUG] Raw FAISS indices: {indices[0]}")
-    return get_metadata_by_ids(indices[0])
-
-
-def image_to_text_answer(image_path, top_k=3):
-    results = search_by_image(image_path, top_k)
-
-    context = ""
-    for r in results:
-        context += f"\nCaption: {r['caption']}\nOCR: {r['ocr_text']}\n"
-
-    return context
+results = search_by_text("population pie chart", top_k=3)
+if not results:
+    print("No results found")
+for r in results:
+    print("\n---")
+    print("Path:   ", r["path"])
+    print("Caption:", r["caption"])
+    print("OCR:    ", r["ocr_text"])
