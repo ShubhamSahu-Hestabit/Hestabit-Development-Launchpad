@@ -3,7 +3,6 @@ from transformers import CLIPProcessor, CLIPModel
 from PIL import Image
 import numpy as np
 
-
 class CLIPEmbedder:
     def __init__(self, model_name="openai/clip-vit-base-patch32"):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
