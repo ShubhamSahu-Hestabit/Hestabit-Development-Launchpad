@@ -102,7 +102,7 @@ class IngestionPipeline:
             chunk.metadata["chunk_index"] = idx
             chunk.metadata["ingested_at"] = str(datetime.utcnow())
 
-            # 🔥 NEW METADATA FIELDS
+            #  NEW METADATA FIELDS
             chunk.metadata["year"] = self._extract_year(source)
             chunk.metadata["type"] = file_ext
 

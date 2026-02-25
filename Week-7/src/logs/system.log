@@ -1,0 +1,82 @@
+2026-02-25 13:55:51,474 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 13:55:58,118 - ERROR - Form data requires "python-multipart" to be installed. 
+You can install "python-multipart" with: 
+
+pip install python-multipart
+
+2026-02-25 13:56:56,827 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 13:57:02,604 - ERROR - Form data requires "python-multipart" to be installed. 
+You can install "python-multipart" with: 
+
+pip install python-multipart
+
+2026-02-25 13:59:55,488 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 14:10:55,092 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 14:11:12,451 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2026-02-25 14:13:12,304 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 14:14:46,879 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 14:14:47,580 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 14:14:47,672 - INFO - Question: Explain the financial risk management process
+2026-02-25 14:14:47,672 - INFO - Confidence: 0.498
+2026-02-25 14:14:47,672 - INFO - Latency: 2.278
+2026-02-25 14:16:07,505 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 14:16:42,131 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 14:16:42,384 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 14:19:03,287 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 14:35:07,648 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 14:35:40,503 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 14:37:58,082 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 14:37:58,408 - INFO - Question: Explain the financial risk management process
+2026-02-25 14:37:58,409 - INFO - Confidence: 0.813
+2026-02-25 14:37:58,409 - INFO - Attempts Used: 1
+2026-02-25 14:37:58,409 - INFO - Latency: 2.08
+2026-02-25 14:38:39,040 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 14:38:39,245 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 14:47:23,786 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 14:48:09,203 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 15:44:09,818 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 15:44:44,189 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 15:44:44,467 - INFO - Question: Explain the financial risk management process
+2026-02-25 15:44:44,467 - INFO - Confidence: 0.813
+2026-02-25 15:44:44,467 - INFO - Attempts Used: 1
+2026-02-25 15:44:44,467 - INFO - Latency: 2.262
+2026-02-25 15:52:39,360 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 15:56:09,282 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 15:59:59,690 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 16:00:06,181 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 16:03:25,294 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 16:03:37,126 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 16:08:33,121 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 16:08:38,191 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 16:12:20,641 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 16:12:30,425 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 16:16:36,027 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 16:16:43,970 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 16:31:26,906 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 16:31:36,897 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 16:31:37,175 - INFO - Question: Explain the financial risk management process
+2026-02-25 16:31:37,176 - INFO - Confidence: 0.813
+2026-02-25 16:31:37,176 - INFO - Attempts Used: 1
+2026-02-25 16:31:37,176 - INFO - Latency: 1.679
+2026-02-25 16:44:56,027 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 16:50:08,393 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 16:50:14,284 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 16:51:40,710 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 16:51:41,124 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 17:41:13,227 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 17:41:48,589 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 17:42:17,076 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 17:42:17,384 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 17:46:03,383 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 17:46:03,718 - INFO - Question: Explain the financial risk management process
+2026-02-25 17:46:03,718 - INFO - Confidence: 0.813
+2026-02-25 17:46:03,718 - INFO - Attempts Used: 1
+2026-02-25 17:46:03,718 - INFO - Latency: 1.764
+2026-02-25 17:46:26,324 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 17:46:26,726 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 17:47:04,866 - INFO - Load pretrained SentenceTransformer: BAAI/bge-small-en-v1.5
+2026-02-25 17:47:09,942 - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-25 17:47:10,219 - INFO - Question: Explain the financial risk management process
+2026-02-25 17:47:10,219 - INFO - Confidence: 0.813
+2026-02-25 17:47:10,219 - INFO - Attempts Used: 1
+2026-02-25 17:47:10,219 - INFO - Latency: 1.886
