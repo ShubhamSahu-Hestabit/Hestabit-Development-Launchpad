@@ -1,0 +1,152 @@
+.App {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 2.5rem;
+}
+
+.status {
+  text-align: center;
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  font-weight: 500;
+  color: #555;
+}
+
+.add-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.input {
+  flex: 1;
+  padding: 15px;
+  font-size: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.input:focus {
+  border-color: #667eea;
+}
+
+.btn-add {
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-add:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+.items-section {
+  margin-top: 30px;
+}
+
+.items-section h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 1.1rem;
+}
+
+.items-list {
+  list-style: none;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+
+.item:hover {
+  background: #f0f0f0;
+  transform: translateX(5px);
+}
+
+.item-name {
+  color: #333;
+  font-size: 1.1rem;
+  flex: 1;
+}
+
+.btn-delete {
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-delete:hover {
+  background: #da190b;
+  transform: scale(1.05);
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .add-form {
+    flex-direction: column;
+  }
+
+  .btn-add {
+    width: 100%;
+  }
+}

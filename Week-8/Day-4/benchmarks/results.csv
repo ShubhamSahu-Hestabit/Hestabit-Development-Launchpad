@@ -1,0 +1,4 @@
+Model,Latency_s,Tokens_per_sec,VRAM_MB,Accuracy,Device
+Base,76.951775,1.559418,0.0,0.666667,CPU
+Fine-tuned,70.336069,1.706095,0.0,0.333333,CPU
+GGUF,31.737416,3.781026,0.0,0.666667,CPU
