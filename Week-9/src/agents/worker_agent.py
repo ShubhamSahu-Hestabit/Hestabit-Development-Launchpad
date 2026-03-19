@@ -4,7 +4,6 @@ from autogen_core.models import SystemMessage, UserMessage
 from orchestrator.messages import WorkerTask, WorkerResult
 from config import model_client
 
-
 class WorkerAgent(RoutedAgent):
 
     def __init__(self):

@@ -11,7 +11,6 @@ from agents.worker_agent import WorkerAgent
 from agents.reflection_agent import ReflectionAgent
 from agents.validator import ValidatorAgent
 
-
 # -------- Thinking Animation --------
 stop_animation = False
 
