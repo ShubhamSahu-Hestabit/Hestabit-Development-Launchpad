@@ -8,7 +8,6 @@ async def main():
     while True:
         try:
             query = input("Enter your query (or type 'exit'): ").strip()
-
             if query.lower() in ["exit", "quit"]:
                 print("Exiting...")
                 break
@@ -24,7 +23,6 @@ async def main():
             # Step 3: Summary
             print("Generating summary...\n")
             summary = await summarize_results(context)
-
             print("SUMMARY:\n")
             print(summary)
             print("\n" + "=" * 60 + "\n")

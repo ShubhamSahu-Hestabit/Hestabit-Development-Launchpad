@@ -1,11 +1,10 @@
-# TOOL-CHAIN.md
-## Day 3 — Tool-Calling Agents
+# TOOL-CHAIN.md — Day 3: Tool-Calling Agents
 
 ---
 
-## Objective
+## What Is This?
 
-A user gives a natural language query. The system creates a step-by-step plan, different agents execute tasks using real tools, and a final answer is produced from combined outputs.
+A multi-agent system where a user types a natural language query, the Orchestrator breaks it into steps, and specialized agents execute each step using real tools. All steps run **sequentially** — each step passes its output to the next via a shared context.
 
 ---
 
@@ -13,212 +12,120 @@ A user gives a natural language query. The system creates a step-by-step plan, d
 
 ```
 User Query
-    |
-    v
-Orchestrator (creates JSON plan)
-    |
-    v
-+----------+----------+----------+
-|          |          |          |
-File      DB        Code
-Agent    Agent     Agent
-|          |          |
-v          v          v
-+------------------------------+
-         Shared Context
-+------------------------------+
-              |
-              v
-         Summarizer
-              |
-              v
-        Final Answer
+     |
+     v
+Orchestrator
+(LLM creates a JSON plan)
+     |
+     v
++---------+---------+---------+
+|         |         |         |
+File     DB       Code
+Agent   Agent    Agent
+|         |         |
++---------+---------+
+          |
+     Shared Context
+    (step outputs stored
+     as key-value pairs)
+          |
+          v
+      Summarizer
+          |
+          v
+     Final Answer
 ```
 
 ---
 
-## Agents and Roles
+## Agents and Tools
 
-| Agent | File | Responsibility |
-|-------|------|----------------|
-| Orchestrator | `orchestrator.py` | Converts query into a structured execution plan |
-| File Agent | `tools/file_agent.py` | Reads and writes `.csv` and `.txt` files |
-| DB Agent | `tools/db_agent.py` | Runs SQL queries, converts CSV to SQLite |
-| Code Agent | `tools/code_executor.py` | Executes Python code, generates insights |
-| Summarizer | `agents/summarizer_agent.py` | Combines all outputs into a readable answer |
-
----
-
-## How Tool Calling Works
-
-The LLM does not execute tasks directly. It decides what to do, calls a tool, and the tool runs the actual logic.
-
-```
-Agent
-  |
-  v
-Tool Call
-  |
-  v
-Function Execution
-  |
-  v
-Result returned to Agent
-  |
-  v
-Output saved to Context
-```
+| Agent | Tool | Responsibility | Blocked |
+|-------|------|----------------|---------|
+| File Agent | `read_file`, `write_file` | Reads/writes `.csv` and `.txt` only | Any other file type → `UNSUPPORTED` |
+| DB Agent | `csv_to_db`, `execute_sql` | Converts CSV to SQLite, runs SELECT/INSERT | `DROP`, `DELETE`, `TRUNCATE`, `ALTER` → `BLOCKED` |
+| Code Agent | `PythonCodeExecutionTool` | Runs pandas analysis on data from context | Cannot read files or save to disk |
+| Summarizer | None (LLM only) | Wraps all outputs into one clean paragraph | — |
 
 ---
 
-## Example 1 — CSV Analysis
+## Example — Full Pipeline
 
-**Query:** `Analyze sales.csv and generate top 5 insights`
+**Query:**
+```
+Read sales.csv, generate top 5 insights, write them to output.txt
+```
 
-**Plan:**
-
+**Orchestrator creates this plan:**
 ```json
 {
   "steps": [
-    {
-      "agent": "file",
-      "task": "Read sales.csv",
-      "output_key": "csv_data"
-    },
-    {
-      "agent": "code",
-      "task": "Analyze data and generate top 5 insights",
-      "input_keys": ["csv_data"],
-      "output_key": "insights"
-    }
+    {"agent":"file", "task":"Read sales.csv",                       "input_keys":[],           "output_key":"csv_data"},
+    {"agent":"code", "task":"Generate top 5 insights using pandas", "input_keys":["csv_data"], "output_key":"insights"},
+    {"agent":"file", "task":"Write insights to output.txt",         "input_keys":["insights"], "output_key":"write_result"}
   ]
 }
 ```
 
-**Flow:**
-
+**Step-by-step execution:**
 ```
-sales.csv
-    |
-    v
-File Agent (read_file tool)
-    |
-    v
-csv_data saved to context
-    |
-    v
-Code Agent (receives csv_data)
-    |
-    v
-Python analysis runs
-    |
-    v
-insights saved to context
-    |
-    v
-Summarizer --> Final Answer
+Step 1 — File Agent
+  reads sales.csv from disk
+  saves content → context["csv_data"]
+
+Step 2 — Code Agent
+  receives context["csv_data"]
+  runs pandas analysis
+  saves result → context["insights"]
+
+Step 3 — File Agent
+  receives context["insights"]
+  writes to output.txt on disk
+  saves status → context["write_result"]
+
+Summarizer
+  reads all context values
+  returns one final paragraph
 ```
 
 ---
 
-## Example 2 — DB-Based Analysis
+## How to Run
 
-**Query:** `Convert sales.csv to database and show top products`
+```bash
+# 1. Set your Groq API key (free at console.groq.com)
+cd Week-9/src
+echo "GROQ_API_KEY=your_key_here" > .env
 
-**Plan:**
-
-```json
-{
-  "steps": [
-    {
-      "agent": "db",
-      "task": "Use csv_to_db: csv_path='sales.csv', db_path='sales.db', table='sales'",
-      "output_key": "db_created"
-    },
-    {
-      "agent": "db",
-      "task": "Use execute_sql: SELECT product, sales FROM sales ORDER BY sales DESC LIMIT 5",
-      "output_key": "top_products"
-    }
-  ]
-}
+# 2. Run
+python main_day3.py
 ```
 
-**Flow:**
-
+**Try this query to test the full pipeline:**
 ```
-sales.csv
-    |
-    v
-DB Agent (csv_to_db tool)
-    |
-    v
-sales.db created
-    |
-    v
-DB Agent (execute_sql tool)
-    |
-    v
-top_products saved to context
-    |
-    v
-Summarizer --> Final Answer
+Read sales.csv, generate top 5 insights, write them to output.txt
+```
+
+**Try this to test the DB pipeline:**
+```
+Convert sales.csv to sales.db and show total revenue by region
 ```
 
 ---
 
-## Context Passing
-
-Each step saves its output to a shared context dictionary. The next step reads from it via `input_keys`.
+## Project Structure
 
 ```
-Step 1 output --> context["csv_data"]
-                        |
-                        v
-             Step 2 reads context["csv_data"]
-                        |
-                        v
-             Step 2 output --> context["insights"]
+src/
+├── main_day3.py              ← Entry point
+├── orchestrator_tool.py      ← Plan generation + step execution
+├── config.py                 ← Groq (primary) / Ollama (fallback)
+├── tools/
+│   ├── file_agent.py         ← Read/write .csv and .txt
+│   ├── db_agent.py           ← SQLite + SQL queries
+│   └── code_executor.py      ← Python/pandas execution
+├── agents/
+│   └── summarizer_agent.py   ← Final answer generation
+└── src/
+    └── sales.csv             ← Sample data
 ```
-
----
-
-## Tools Reference
-
-| Task | Tool | Agent |
-|------|------|-------|
-| Read/write files | `read_file`, `write_file` | File Agent |
-| Run SQL queries | `execute_sql` | DB Agent |
-| CSV to SQLite | `csv_to_db` | DB Agent |
-| Python execution | `PythonCodeExecutionTool` | Code Agent |
-
-No external APIs. Fully local using Ollama + SQLite.
-
----
-
-## Logging
-
-```
-[Step 1] FILE: Read sales.csv
-Result saved to 'csv_data'
-
-[Step 2] CODE: Generate insights
-Result saved to 'insights'
-```
-
----
-
-## Known Limitations
-
-- Planner may create unnecessary steps with ambiguous queries
-- Missing files cause errors — ensure input files exist before running
-- Not suitable for general questions outside the data pipeline
-
----
-
-## Deliverables
-
-- `/tools/code_executor.py`
-- `/tools/db_agent.py`
-- `/tools/file_agent.py`
-- `TOOL-CHAIN.md`

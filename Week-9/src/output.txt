@@ -1,0 +1,5 @@
+Top selling region: North
+Highest revenue: 216000
+Lowest cost: 44000
+ Highest revenue product: Laptop
+ Lowest revenue product: Tablet 

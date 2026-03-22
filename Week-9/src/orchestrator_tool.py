@@ -1,24 +1,20 @@
 import json
+import re
 import logging
 from typing import Dict, List
 from pydantic import BaseModel
 from autogen_agentchat.agents import AssistantAgent
-from autogen_ext.models.ollama import OllamaChatCompletionClient
 
+from config import model_client
 from tools.code_executor import code_agent, executor
 from tools.db_agent import db_agent
 from tools.file_agent import file_agent
 from agents.summarizer_agent import summarizer_agent
 
-
-# Minimal logging (no separate file if you don’t want)
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
-)
 logger = logging.getLogger(__name__)
 
 
+# ── Data models ───────────────────────────────────────────────
 class PlanStep(BaseModel):
     agent: str
     task: str
@@ -30,12 +26,12 @@ class ExecutionPlan(BaseModel):
     steps: List[PlanStep]
 
 
+# ── Orchestrator system prompt ────────────────────────────────
 sys_msg = '''
 You are an orchestration planner.
+Return ONLY valid JSON. No explanations. No markdown.
 
-Your job is ONLY to describe an execution plan.
-You MUST return ONLY valid JSON that matches this schema exactly:
-
+Schema:
 {
   "steps": [
     {
@@ -47,33 +43,25 @@ You MUST return ONLY valid JSON that matches this schema exactly:
   ]
 }
 
-STRICT RULES:
+AGENT RULES:
+1. file  → reads/writes .csv and .txt only. input_keys=[] for reads.
+2. db    → csv_to_db and execute_sql. ALWAYS input_keys=[]. Never needs file agent first.
+3. code  → pandas analysis only. Always needs input_keys from a previous step.
 
-1. Agent responsibilities:
-   - file → READ files (CSVs, text) and WRITE files (output.txt, reports)
-   - db   → Execute SQL queries (use execute_sql tool), CSV to database conversion (use csv_to_db tool)
-   - code → Perform Python analysis USING data from file/db agent (NOT for CSV-to-DB conversion or read files directly)
+ROUTING:
+- "convert X.csv to X.db"         → db (csv_to_db)
+- "convert and query"              → db (csv_to_db) → db (execute_sql)
+- "read and analyze"               → file (read) → code (analyze)
+- "read, analyze and save"         → file (read) → code (analyze) → file (write)
 
-2. All files are located inside 'src/' directory. Always refer using filename only.
+EXAMPLES:
 
-3. MANDATORY EXAMPLES:
-
-Input: "Convert sales.csv to sales.db and display table"
+Input: "Convert sales.csv to sales.db and show revenue by region"
 Output:
 {
   "steps": [
-    {
-      "agent": "db",
-      "task": "Use csv_to_db tool: csv_path='sales.csv', db_path='sales.db', table='sales'",
-      "input_keys": [],
-      "output_key": "db_created"
-    },
-    {
-      "agent": "db",
-      "task": "Use execute_sql tool: db_path='sales.db', query='SELECT * FROM sales'",
-      "input_keys": [],
-      "output_key": "table_data"
-    }
+    {"agent":"db","task":"Use csv_to_db tool: csv_path='sales.csv', db_path='sales.db', table='sales'","input_keys":[],"output_key":"db_created"},
+    {"agent":"db","task":"Use execute_sql tool: db_path='sales.db', query='SELECT region, SUM(revenue) as total FROM sales GROUP BY region ORDER BY total DESC'","input_keys":[],"output_key":"region_revenue"}
   ]
 }
 
@@ -81,40 +69,39 @@ Input: "Analyze sales.csv and write insights to output.txt"
 Output:
 {
   "steps": [
-    {
-      "agent": "file",
-      "task": "Read sales.csv",
-      "input_keys": [],
-      "output_key": "csv_data"
-    },
-    {
-      "agent": "code",
-      "task": "Generate 5 insights from data",
-      "input_keys": ["csv_data"],
-      "output_key": "insights"
-    },
-    {
-      "agent": "file",
-      "task": "Write insights to output.txt",
-      "input_keys": ["insights"],
-      "output_key": "write_result"
-    }
+    {"agent":"file","task":"Read sales.csv","input_keys":[],"output_key":"csv_data"},
+    {"agent":"code","task":"Generate 5 insights from csv data using pandas","input_keys":["csv_data"],"output_key":"insights"},
+    {"agent":"file","task":"Write insights to output.txt","input_keys":["insights"],"output_key":"write_result"}
   ]
 }
 
-3. Code agent is STATELESS - use ONLY ONE code step between file operations
-
-4. Steps MUST be ordered by dependency
-
-Return ONLY raw JSON. No explanations.
+ABSOLUTE RULES:
+- db steps ALWAYS have input_keys=[]
+- code ALWAYS has input_keys from a previous step
+- file read ALWAYS has input_keys=[]
+- ONE code step only
+- Steps ordered by dependency
 '''
 
 
-model_client = OllamaChatCompletionClient(
-    model="qwen2.5:7b-instruct-q4_0"
-)
+# ── Safety guardrail ──────────────────────────────────────────
+FORBIDDEN_INTENTS = ["drop table", "delete from", "truncate table"]
 
 
+def check_query_safety(query: str) -> str | None:
+    q = query.lower()
+    for intent in FORBIDDEN_INTENTS:
+        if intent in q:
+            logger.warning(f"Blocked destructive query: {query}")
+            return (
+                f"BLOCKED: '{intent}' is a destructive operation and is not allowed.\n"
+                f"DB Agent only supports SELECT and INSERT.\n"
+                f"Try: 'Query sales.db and filter by cost < 100000'"
+            )
+    return None
+
+
+# ── Agents ────────────────────────────────────────────────────
 orchestrator = AssistantAgent(
     name="ORCHESTRATOR",
     model_client=model_client,
@@ -122,53 +109,73 @@ orchestrator = AssistantAgent(
 )
 
 
+# ── Main orchestration ────────────────────────────────────────
 async def run_orchestration(user_query: str) -> Dict[str, any]:
+
+    # Safety check before hitting any agent
+    safety_msg = check_query_safety(user_query)
+    if safety_msg:
+        print(f"\n{safety_msg}\n")
+        return {"blocked": safety_msg}
+
     await executor.start()
 
-    #  Step 1: Generate Plan
-    plan_result = await orchestrator.run(task=user_query)
-    plan_json = plan_result.messages[-1].content
-    print(f"\nPlan:\n{plan_json}\n")
+    # Step 1: Generate plan
+    try:
+        plan_result = await orchestrator.run(task=user_query)
+        plan_json = plan_result.messages[-1].content
+        plan_json = re.sub(r"```(?:json)?", "", plan_json).strip().strip("`").strip()
+        logger.info(f"Plan generated:\n{plan_json}")
+        print(f"\nPlan:\n{plan_json}\n")
+    except Exception as e:
+        logger.error(f"Orchestrator failed: {e}")
+        await executor.stop()
+        return {"error": f"Plan generation failed: {str(e)}"}
 
-    plan = ExecutionPlan.model_validate(json.loads(plan_json))
+    # Step 2: Parse plan
+    try:
+        plan = ExecutionPlan.model_validate(json.loads(plan_json))
+    except Exception as e:
+        logger.error(f"Plan parsing failed: {e}")
+        await executor.stop()
+        return {"error": f"Plan parsing failed: {str(e)}"}
+
     context: Dict[str, any] = {}
 
-    #  Step 2: Execute Steps
+    # Step 3: Execute steps sequentially
     for i, step in enumerate(plan.steps, 1):
         print(f"[Step {i}] {step.agent.upper()}: {step.task[:60]}...")
+        logger.info(f"Step {i} | Agent: {step.agent} | Task: {step.task}")
 
+        # Inject context from previous steps
         enriched_task = step.task
-
-        # Inject context
         if step.input_keys:
             enriched_task += "\n\nContext from Previous Steps:\n"
             for key in step.input_keys:
                 if key in context:
                     enriched_task += f"\n{key}:\n{context[key]}\n"
+                else:
+                    logger.warning(f"Step {i}: expected key '{key}' not found in context")
 
+        # Run the agent
         try:
             if step.agent == "file":
                 result = await file_agent.run(task=enriched_task)
-
-                #  FIXED safe extraction
-                try:
-                    output = result.messages[-1].content
-                except Exception:
-                    output = str(result)
-
             elif step.agent == "db":
                 result = await db_agent.run(task=enriched_task)
-                output = result.messages[-1].content
-
             elif step.agent == "code":
                 result = await code_agent.run(task=enriched_task)
-                output = result.messages[-1].content
-
             else:
-                raise ValueError(f"Unknown agent: {step.agent}")
+                raise ValueError(f"Unknown agent: '{step.agent}'")
+
+            output = result.messages[-1].content
+            if isinstance(output, str) and (output.startswith("ERROR") or output.startswith("BLOCKED")):
+                logger.warning(f"Step {i} returned: {output[:100]}")
+            else:
+                logger.info(f"Step {i} completed. Preview: {str(output)[:80]}")
 
         except Exception as e:
-            logger.error(f"Step failed: {str(e)}")
+            logger.error(f"Step {i} failed: {str(e)}", exc_info=True)
             output = f"ERROR: {str(e)}"
 
         context[step.output_key] = output
@@ -178,9 +185,24 @@ async def run_orchestration(user_query: str) -> Dict[str, any]:
     return context
 
 
+# ── Summarizer ────────────────────────────────────────────────
 async def summarize_results(context: Dict[str, any]) -> str:
-    raw_data = "\n\n".join(f"{k}:\n{v}" for k, v in context.items())
-    result = await summarizer_agent.run(
-        task=f"Summarize this concisely:\n\n{raw_data}"
-    )
-    return result.messages[-1].content
+    clean_context = {
+        k: v for k, v in context.items()
+        if isinstance(v, str) and not v.startswith("ERROR") and not v.startswith("BLOCKED")
+    }
+
+    if not clean_context:
+        logger.warning("Nothing to summarize — all steps failed or were blocked")
+        return "No results to summarize. Check agent_logs.log for details."
+
+    raw_data = "\n\n".join(f"{k}:\n{v}" for k, v in clean_context.items())
+
+    try:
+        result = await summarizer_agent.run(
+            task=f"Summarize this concisely:\n\n{raw_data}"
+        )
+        return result.messages[-1].content
+    except Exception as e:
+        logger.error(f"Summarizer failed: {e}")
+        return f"Summary failed: {str(e)}"
