@@ -1,0 +1,12 @@
+git bisect start
+# status: waiting for both good and bad commits
+# bad: [9f4110d940f288ef3ac4e67114c48e4022d8b353] chore: finalize login message utility
+git bisect bad 9f4110d940f288ef3ac4e67114c48e4022d8b353
+# status: waiting for good commit(s), bad commit known
+# good: [874c98fb0a87d7efc3cc891f37980b4972e6bd24] feat: show failure message for invalid login
+git bisect good 874c98fb0a87d7efc3cc891f37980b4972e6bd24
+# bad: [87afea6ab1da15524851fded887eb2016a9da000] docs: add comment describing login messages
+git bisect bad 87afea6ab1da15524851fded887eb2016a9da000
+# bad: [85059166c110dd6d6e0488da93083901085fcbb3] change: treat login attempt as success by default
+git bisect bad 85059166c110dd6d6e0488da93083901085fcbb3
+# first bad commit: [85059166c110dd6d6e0488da93083901085fcbb3] change: treat login attempt as success by default
