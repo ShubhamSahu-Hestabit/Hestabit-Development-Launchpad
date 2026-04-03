@@ -1,4 +1,4 @@
-# Week 5 - End-to-End Machine Learning Pipeline
+# Week 6 - End-to-End Machine Learning Pipeline
 
 This week focuses on building a complete machine learning pipeline step by step, covering data analysis, feature engineering, model training, evaluation, interpretation, and deployment.
 
@@ -7,7 +7,7 @@ This week focuses on building a complete machine learning pipeline step by step,
 ## Folder Structure
 
 ```
-Week-5/
+Week-6/
 ├── Day-1/
 │   ├── images/
 │   ├── src/
