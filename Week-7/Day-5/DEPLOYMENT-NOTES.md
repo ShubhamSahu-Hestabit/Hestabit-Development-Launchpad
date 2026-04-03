@@ -78,7 +78,7 @@ uvicorn src.deployment.app:app --reload --host 0.0.0.0 --port 8001
 ### 5️⃣ Run Streamlit Frontend (Optional)
 
 ```bash
-streamlit run deployment/streamlit_app.py
+streamlit run src/ui/app.py
 ```
 
 - Provides interactive UI for text, image, and SQL QA

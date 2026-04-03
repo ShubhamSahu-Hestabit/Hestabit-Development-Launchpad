@@ -1,20 +1,45 @@
 import streamlit as st
 import requests
+import time
 from datetime import datetime
+import os
 
-st.set_page_config(page_title="💡 Enterprise Knowledge Intelligence", layout="wide")
-st.title("💡 Enterprise Knowledge Intelligence System")
+# ---------------- CONFIG ----------------
+st.set_page_config(page_title="Enterprise AI", layout="wide")
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8001")
 
-# Initialize session state
+# ---------------- STYLING ----------------
+st.markdown("""
+<style>
+.main {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+}
+h1 {
+    text-align: center;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<h1>🚀 Enterprise Knowledge Intelligence</h1>
+<p style='text-align:center; color:gray;'>Multimodal AI • RAG Powered</p>
+""", unsafe_allow_html=True)
+
+# ---------------- SESSION ----------------
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# Sidebar navigation
-option = st.sidebar.radio("Choose Query Type", ["Ask", "Ask Image", "Ask SQL"])
+# ---------------- SIDEBAR ----------------
+st.sidebar.title("⚙️ Controls")
+mode = st.sidebar.selectbox("Mode", ["💬 Ask", "🖼️ Ask Image", "🗄️ Ask SQL"])
 
+if st.sidebar.button("🗑️ Clear Chat"):
+    st.session_state.chat_history = []
+
+# ---------------- API ----------------
 def call_api(endpoint, payload=None, files=None):
-    """Generic API call function for text, SQL, or image."""
-    url = f"http://127.0.0.1:8000/{endpoint}"
+    url = f"{API_URL}/{endpoint}"
     try:
         if files:
             response = requests.post(url, files=files)
@@ -22,91 +47,146 @@ def call_api(endpoint, payload=None, files=None):
             response = requests.post(url, json=payload)
         response.raise_for_status()
         return response.json()
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         st.error(f"API Error: {e}")
         return {}
 
-# ------------------------------
-# Ask Text
-# ------------------------------
-if option == "Ask":
-    question = st.text_input("Enter your question")
-    if st.button("Submit Question") and question:
-        with st.spinner("Generating answer..."):
+# ---------------- ✅ FIXED STREAM ----------------
+def stream_text(text):
+    """Stream text while preserving formatting"""
+    for line in text.split("\n"):
+        yield line + "\n"
+        time.sleep(0.05)
+
+# ---------------- RENDER CHAT ----------------
+for idx, chat in enumerate(st.session_state.chat_history):
+
+    with st.chat_message("user"):
+        st.markdown(chat["question"])
+
+    with st.chat_message("assistant"):
+        st.markdown(chat["answer"])
+
+        if chat["type"] == "text":
+            cols = st.columns(3)
+            cols[0].metric("Confidence", f"{chat['confidence']*100:.2f}%")
+            cols[1].metric("Hallucination", "Yes" if chat["hallucinated"] else "No")
+            cols[2].metric("Latency", f"{chat['latency']:.2f}s")
+
+            if chat["hallucinated"]:
+                st.warning("⚠️ Possible hallucination detected")
+            else:
+                st.success("✅ Reliable answer")
+
+            # FEEDBACK
+            fb_cols = st.columns([1, 1, 6])
+
+            if fb_cols[0].button("👍", key=f"like_{idx}"):
+                call_api("feedback", {
+                    "question": chat["question"],
+                    "answer": chat["answer"],
+                    "rating": 5,
+                    "comment": ""
+                })
+                st.success("Feedback submitted 👍")
+
+            if fb_cols[1].button("👎", key=f"dislike_{idx}"):
+                st.session_state[f"fb_{idx}"] = True
+
+            if st.session_state.get(f"fb_{idx}", False):
+                comment = st.text_area("What went wrong?", key=f"comment_{idx}")
+
+                if st.button("Submit Feedback", key=f"submit_{idx}"):
+                    call_api("feedback", {
+                        "question": chat["question"],
+                        "answer": chat["answer"],
+                        "rating": 1,
+                        "comment": comment
+                    })
+                    st.success("Feedback submitted 👎")
+
+# ---------------- INPUT ----------------
+
+# TEXT MODE
+if mode == "💬 Ask":
+    question = st.chat_input("Ask something...")
+
+    if question:
+        with st.chat_message("user"):
+            st.markdown(question)
+
+        with st.chat_message("assistant"):
+            placeholder = st.empty()
+            placeholder.markdown("⏳ Thinking...")
+
+            start = time.time()
             data = call_api("ask", {"question": question})
-            st.session_state.chat_history.append({
-                "question": question,
-                "answer": data.get("answer", "No response"),
-                "confidence": data.get("confidence", 0.0),
-                "hallucinated": data.get("hallucinated", False),
-                "latency": data.get("latency", 0.0),
-                "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "type": "text"
-            })
+            latency = time.time() - start
 
-# ------------------------------
-# Ask Image
-# ------------------------------
-elif option == "Ask Image":
-    uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
-    if st.button("Submit Image") and uploaded_file:
-        with st.spinner("Processing image..."):
-            files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
-            data = call_api("ask-image", files=files)
-            st.session_state.chat_history.append({
-                "question": f"Image: {uploaded_file.name}",
-                "answer": data.get("answer", "No response"),
-                "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "type": "image"
-            })
+            answer = data.get("answer", "No response")
+            confidence = data.get("confidence", 0.0)
+            hallucinated = data.get("hallucinated", False)
 
-# ------------------------------
-# Ask SQL
-# ------------------------------
-elif option == "Ask SQL":
-    sql_query = st.text_area("Enter SQL Query", height=100)
-    if st.button("Submit SQL") and sql_query:
-        with st.spinner("Executing SQL..."):
+            placeholder.empty()
+
+            # ✅ FIXED STREAMING DISPLAY
+            full_text = ""
+            for chunk in stream_text(answer):
+                full_text += chunk
+                placeholder.markdown(full_text)
+
+            cols = st.columns(3)
+            cols[0].metric("Confidence", f"{confidence*100:.2f}%")
+            cols[1].metric("Hallucination", "Yes" if hallucinated else "No")
+            cols[2].metric("Latency", f"{latency:.2f}s")
+
+        st.session_state.chat_history.append({
+            "question": question,
+            "answer": answer,
+            "confidence": confidence,
+            "hallucinated": hallucinated,
+            "latency": latency,
+            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "type": "text"
+        })
+
+# IMAGE MODE
+elif mode == "🖼️ Ask Image":
+    uploaded_file = st.file_uploader("Upload image", type=["png", "jpg", "jpeg"])
+
+    if uploaded_file and st.button("Analyze"):
+        files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
+        data = call_api("ask-image", files=files)
+
+        answer = data.get("answer", "No response")
+
+        with st.chat_message("assistant"):
+            st.image(uploaded_file)
+            st.markdown(answer)
+
+        st.session_state.chat_history.append({
+            "question": f"Image: {uploaded_file.name}",
+            "answer": answer,
+            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "type": "image"
+        })
+
+# SQL MODE
+elif mode == "🗄️ Ask SQL":
+    sql_query = st.chat_input("Enter SQL query...")
+
+    if sql_query:
+        with st.chat_message("user"):
+            st.markdown(sql_query)
+
+        with st.chat_message("assistant"):
             data = call_api("ask-sql", {"question": sql_query})
-            st.session_state.chat_history.append({
-                "question": sql_query,
-                "answer": data.get("answer", "No response"),
-                "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "type": "sql"
-            })
+            answer = data.get("answer", "No response")
+            st.markdown(answer)
 
-# ------------------------------
-# Display Chat History
-# ------------------------------
-st.subheader("💬 Conversation History")
-for idx, chat in enumerate(reversed(st.session_state.chat_history)):
-    st.markdown(f"**Q ({chat['time']}):** {chat['question']}")
-    st.text_area("Answer", chat['answer'], height=200, key=f"answer_{idx}")
-
-    # Show confidence/hallucination/latency only for Ask (text) queries
-    if chat['type'] == "text":
-        cols = st.columns(3)
-        cols[0].metric("Confidence", f"{chat['confidence']*100:.2f}%")
-        cols[1].markdown(
-            f"<span style='color:{'red' if chat['hallucinated'] else 'green'}; font-weight:bold'>Hallucinated: {chat['hallucinated']}</span>",
-            unsafe_allow_html=True
-        )
-        cols[2].metric("Latency (s)", f"{chat['latency']:.2f}")
-
-        # ------------------------------
-        # Feedback Section
-        # ------------------------------
-        with st.expander("Provide Feedback"):
-            rating = st.slider(f"Rate this answer (1-5)", 1, 5, 5, key=f"rating_{idx}")
-            comment = st.text_area("Add comment (optional)", key=f"comment_{idx}")
-            if st.button("Submit Feedback", key=f"feedback_btn_{idx}"):
-                feedback_payload = {
-                    "question": chat['question'],
-                    "answer": chat['answer'],
-                    "rating": rating,
-                    "comment": comment
-                }
-                feedback_response = call_api("feedback", payload=feedback_payload)
-                st.success(feedback_response.get("message", "Feedback submitted successfully."))
-
-    st.markdown("---")
+        st.session_state.chat_history.append({
+            "question": sql_query,
+            "answer": answer,
+            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "type": "sql"
+        })

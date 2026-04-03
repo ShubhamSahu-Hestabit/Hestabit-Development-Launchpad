@@ -46,5 +46,155 @@
         "question": "summarise the pdf",
         "confidence": 0.707,
         "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 02:11:53.643474",
+        "question": "explain the concept of finance management",
+        "confidence": 0.711,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 02:16:38.681787",
+        "question": "Explain me the Concepts of Financial Management",
+        "confidence": 0.658,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 02:32:06.297840",
+        "question": "What techniques are used to reduce hallucination",
+        "confidence": 0.449,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 02:32:07.043034",
+        "question": "What techniques are used to reduce hallucination",
+        "confidence": 0.449,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 02:32:07.762530",
+        "question": "What techniques are used to reduce hallucination",
+        "confidence": 0.449,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 02:44:54.640999",
+        "question": "give me advice for financial management",
+        "confidence": 0.666,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 02:45:31.181502",
+        "question": "you said to develop a comprehenesive plan , can you pls elaborate",
+        "confidence": 0.68,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 07:29:57.995782",
+        "question": "Tell me about financial management?",
+        "confidence": 0.527,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 07:29:59.323312",
+        "question": "Tell me about financial management?",
+        "confidence": 0.789,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 07:39:52.674959",
+        "question": "What is financial management?",
+        "confidence": 0.677,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 07:41:53.106221",
+        "question": "what is finance",
+        "confidence": 0.5,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 07:41:53.722121",
+        "question": "what is finance",
+        "confidence": 0.5,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 07:41:54.327767",
+        "question": "what is finance",
+        "confidence": 0.5,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 07:42:04.857134",
+        "question": "what is finanncial managemnt",
+        "confidence": 0.626,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 07:42:05.676957",
+        "question": "what is finanncial managemnt",
+        "confidence": 0.657,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 07:47:04.441737",
+        "question": "what is financial management?",
+        "confidence": 0.671,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 07:49:36.119607",
+        "question": "what are the ways for financial management?",
+        "confidence": 0.749,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 07:56:37.799369",
+        "question": "what are the ways for financial management?\n\n",
+        "confidence": 0.754,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 08:03:18.889575",
+        "question": "reanswer me the above question",
+        "confidence": 0.617,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 08:03:19.848697",
+        "question": "reanswer me the above question",
+        "confidence": 0.725,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 08:12:07.159699",
+        "question": "who is abc?",
+        "confidence": 0.559,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 08:12:08.024239",
+        "question": "who is abc?",
+        "confidence": 0.559,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 08:12:08.769675",
+        "question": "who is abc?",
+        "confidence": 0.559,
+        "hallucinated": true
+    },
+    {
+        "timestamp": "2026-03-17 08:18:31.149934",
+        "question": "what are the method for financial growth?",
+        "confidence": 0.697,
+        "hallucinated": false
+    },
+    {
+        "timestamp": "2026-03-17 08:19:26.175327",
+        "question": "elaborate please",
+        "confidence": 0.698,
+        "hallucinated": false
     }
 ]
