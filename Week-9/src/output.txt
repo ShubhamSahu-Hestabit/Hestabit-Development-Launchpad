@@ -1,5 +1,1 @@
-Top selling region: North
-Highest revenue: 216000
-Lowest cost: 44000
- Highest revenue product: Laptop
- Lowest revenue product: Tablet 
+ERROR: Code agent returned tool-like text instead of executed output. No real code result was produced. insights:

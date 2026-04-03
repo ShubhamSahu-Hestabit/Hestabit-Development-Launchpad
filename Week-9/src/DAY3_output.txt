@@ -1,0 +1,192 @@
+python main_day3.py
+2026-03-30 15:43:20,411 - INFO - config - Using GROQ API model: llama-3.1-8b-instant
+/home/shubhamsahu/Hestabit-Development Launchpad/Week-9/venv/lib/python3.12/site-packages/autogen_ext/models/openai/_openai_client.py:466: UserWarning: Missing required field 'structured_output' in ModelInfo. This field will be required in a future version of AutoGen.
+  validate_model_info(self._model_info)
+2026-03-30 15:43:20,427 - INFO - config - ACTIVE MODEL → GROQ (llama-3.1-8b-instant)
+/home/shubhamsahu/Hestabit-Development Launchpad/Week-9/src/tools/code_executor.py:12: UserWarning: Using LocalCommandLineCodeExecutor may execute code on the local machine which can be unsafe. For security, it is recommended to use DockerCommandLineCodeExecutor instead. To install Docker, visit: https://docs.docker.com/get-docker/
+  executor = LocalCommandLineCodeExecutor()
+
+Day-3 Multi-Agent System (File + DB + Code)
+
+Enter your query (or type 'exit'): analyze sales.csv and give me 5 insights
+2026-03-30 15:43:34,760 - INFO - httpx - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-30 15:43:34,771 - INFO - autogen_core.events - {"tools": [], "type": "LLMCall", "messages": [{"content": "\nYou are an orchestration planner.\nReturn ONLY valid JSON. No explanations. No markdown.\n\nSchema:\n{\n  \"steps\": [\n    {\n      \"agent\": \"file | db | code\",\n      \"task\": \"string\",\n      \"input_keys\": [\"string\"],\n      \"output_key\": \"string\"\n    }\n  ]\n}\n\nAGENT RULES:\n1. file  \u2192 reads/writes .csv and .txt only. input_keys=[] for reads.\n2. db    \u2192 csv_to_db and execute_sql. ALWAYS input_keys=[].\n3. code  \u2192 supports BOTH:\n   - pandas/data analysis\n   - standalone Python code generation/execution\n   code may have input_keys=[] for direct coding tasks.\n\nROUTING:\n- \"convert X.csv to X.db\"         \u2192 db (csv_to_db)\n- \"convert and query\"             \u2192 db (csv_to_db) \u2192 db (execute_sql)\n- \"read and analyze\"              \u2192 file (read) \u2192 code (analyze)\n- \"read, analyze and save\"        \u2192 file (read) \u2192 code (analyze) \u2192 file (write)\n- \"write code\", \"python program\", \"palindrome code\", \"generate program\"\n                                  \u2192 ONE code step directly with input_keys=[]\n\nEXAMPLES:\n\nInput: \"Convert sales.csv to sales.db and show revenue by region\"\nOutput:\n{\n  \"steps\": [\n    {\"agent\":\"db\",\"task\":\"Use csv_to_db tool: csv_path='sales.csv', db_path='sales.db', table='sales'\",\"input_keys\":[],\"output_key\":\"db_created\"},\n    {\"agent\":\"db\",\"task\":\"Use execute_sql tool: db_path='sales.db', query='SELECT region, SUM(revenue) as total FROM sales GROUP BY region ORDER BY total DESC'\",\"input_keys\":[],\"output_key\":\"region_revenue\"}\n  ]\n}\n\nInput: \"Analyze sales.csv and write insights to output.txt\"\nOutput:\n{\n  \"steps\": [\n    {\"agent\":\"file\",\"task\":\"Read sales.csv\",\"input_keys\":[],\"output_key\":\"csv_data\"},\n    {\"agent\":\"code\",\"task\":\"Generate 5 insights from csv data using pandas and print them clearly\",\"input_keys\":[\"csv_data\"],\"output_key\":\"insights\"},\n    {\"agent\":\"file\",\"task\":\"Write insights to output.txt\",\"input_keys\":[\"insights\"],\"output_key\":\"write_result\"}\n  ]\n}\n\nInput: \"Write a Python program to check palindrome numbers\"\nOutput:\n{\n  \"steps\": [\n    {\"agent\":\"code\",\"task\":\"Write and run Python code to check whether numbers are palindrome. Use your own sample examples and print results clearly in the same code.\",\"input_keys\":[],\"output_key\":\"result\"}\n  ]\n}\n\nABSOLUTE RULES:\n- db steps ALWAYS have input_keys=[]\n- file read ALWAYS has input_keys=[]\n- ONE code step only\n- Steps ordered by dependency\n- For direct coding tasks, return exactly ONE code step with input_keys=[]\n- Include sample examples inside that same code step\n- NEVER answer the user directly with code or prose\n- ALWAYS return JSON matching the schema", "role": "system"}, {"role": "user", "name": "user", "content": "analyze sales.csv and give me 5 insights"}], "response": {"id": "chatcmpl-ee22507e-8be1-4fab-8cc8-0ca7363e95cf", "choices": [{"finish_reason": "stop", "index": 0, "logprobs": null, "message": {"content": "{\n  \"steps\": [\n    {\"agent\":\"file\",\"task\":\"Read sales.csv\",\"input_keys\":[],\"output_key\":\"csv_data\"},\n    {\"agent\":\"code\",\"task\":\"Generate insights from data using pandas. Sample examples: 1. Total revenue by region, 2. Top-selling products, 3. Average customer value, 4. Daily product demand, 5. Total sales by month\",\"input_keys\":[\"csv_data\"],\"output_key\":\"insights\"}\n  ]\n}", "refusal": null, "role": "assistant", "annotations": null, "audio": null, "function_call": null, "tool_calls": null}}], "created": 1774865614, "model": "llama-3.1-8b-instant", "object": "chat.completion", "service_tier": "on_demand", "system_fingerprint": "fp_4387d3edbb", "usage": {"completion_tokens": 99, "prompt_tokens": 669, "total_tokens": 768, "completion_tokens_details": null, "prompt_tokens_details": null, "queue_time": 0.053530855, "prompt_time": 0.068423013, "completion_time": 0.163662783, "total_time": 0.232085796}, "usage_breakdown": null, "x_groq": {"id": "req_01kmz3r1qketk8k61nsq69zdjy", "seed": 1325314825}}, "prompt_tokens": 669, "completion_tokens": 99, "agent_id": null}
+2026-03-30 15:43:34,772 - INFO - orchestrator_tool - Plan generated:
+{
+  "steps": [
+    {"agent":"file","task":"Read sales.csv","input_keys":[],"output_key":"csv_data"},
+    {"agent":"code","task":"Generate insights from data using pandas. Sample examples: 1. Total revenue by region, 2. Top-selling products, 3. Average customer value, 4. Daily product demand, 5. Total sales by month","input_keys":["csv_data"],"output_key":"insights"}
+  ]
+}
+
+Plan:
+{
+  "steps": [
+    {"agent":"file","task":"Read sales.csv","input_keys":[],"output_key":"csv_data"},
+    {"agent":"code","task":"Generate insights from data using pandas. Sample examples: 1. Total revenue by region, 2. Top-selling products, 3. Average customer value, 4. Daily product demand, 5. Total sales by month","input_keys":["csv_data"],"output_key":"insights"}
+  ]
+}
+
+[Step 1] FILE: Read sales.csv...
+2026-03-30 15:43:34,772 - INFO - orchestrator_tool - Step 1 | Agent: file | Task: Read sales.csv
+2026-03-30 15:43:35,134 - INFO - httpx - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-30 15:43:35,135 - INFO - autogen_core.events - {"tools": [{"type": "function", "function": {"name": "read_file", "description": "Read a CSV or TXT file. Pass only the filename, e.g. sales.csv", "parameters": {"type": "object", "properties": {"file_path": {"description": "File name only, e.g. sales.csv", "title": "File Path", "type": "string"}}, "required": ["file_path"], "additionalProperties": false}, "strict": false}}, {"type": "function", "function": {"name": "write_file", "description": "Write plain text content to a file. Pass filename and content as plain string.", "parameters": {"type": "object", "properties": {"file_path": {"description": "File name, e.g. output.txt", "title": "File Path", "type": "string"}, "content": {"description": "Plain text content to write into the file", "title": "Content", "type": "string"}}, "required": ["file_path", "content"], "additionalProperties": false}, "strict": false}}], "type": "LLMCall", "messages": [{"content": "You are a file processing agent.\nUse read_file to read files. Use write_file to write files.\nPass content as a plain string \u2014 no special formatting or escaping.\nRead only .csv and .txt files.\nWrite only .txt or .csv files.", "role": "system"}, {"role": "user", "name": "user", "content": "Read sales.csv"}], "response": {"id": "chatcmpl-13141ebc-524a-4ca0-b09f-600219b2a243", "choices": [{"finish_reason": "tool_calls", "index": 0, "logprobs": null, "message": {"content": null, "refusal": null, "role": "assistant", "annotations": null, "audio": null, "function_call": null, "tool_calls": [{"id": "bhmhcgmr3", "function": {"arguments": "{\"file_path\":\"sales.csv\"}", "name": "read_file"}, "type": "function"}]}}], "created": 1774865615, "model": "llama-3.1-8b-instant", "object": "chat.completion", "service_tier": "on_demand", "system_fingerprint": "fp_f757f4b0bf", "usage": {"completion_tokens": 16, "prompt_tokens": 428, "total_tokens": 444, "completion_tokens_details": null, "prompt_tokens_details": null, "queue_time": 0.045314118, "prompt_time": 0.062228672, "completion_time": 0.088156853, "total_time": 0.150385525}, "usage_breakdown": null, "x_groq": {"id": "req_01kmz3r253f6bbmjcpjs5t54zk", "seed": 162502742}}, "prompt_tokens": 428, "completion_tokens": 16, "agent_id": null}
+2026-03-30 15:43:35,136 - INFO - tools.file_agent - Reading file: /home/shubhamsahu/Hestabit-Development Launchpad/Week-9/src/sales.csv
+2026-03-30 15:43:35,137 - INFO - autogen_core.events - {"type": "ToolCall", "tool_name": "read_file", "arguments": {"file_path": "sales.csv"}, "result": "month,product,region,units_sold,revenue,cost\nJan,Laptop,North,120,144000,96000\nJan,Phone,North,340,102000,68000\nJan,Tablet,South,89,53400,35600\nFeb,Laptop,South,95,114000,76000\nFeb,Phone,East,420,126000,84000\nFeb,Tablet,North,110,66000,44000\nMar,Laptop,East,145,174000,116000\nMar,Phone,South,380,114000,76000\nMar,Tablet,East,200,120000,80000\nApr,Laptop,West,160,192000,128000\nApr,Phone,West,510,153000,102000\nApr,Tablet,West,175,105000,70000\nMay,Laptop,North,130,156000,104000\nMay,Phone,North,460,138000,92000\nMay,Tablet,South,220,132000,88000\nJun,Laptop,South,180,216000,144000\nJun,Phone,East,390,117000,78000\nJun,Tablet,North,140,84000,56000\n", "agent_id": null}
+2026-03-30 15:43:35,137 - INFO - orchestrator_tool - Step 1 completed. Preview: month,product,region,units_sold,revenue,cost
+Jan,Laptop,North,120,144000,96000
+J
+Result saved to 'csv_data'
+
+[Step 2] CODE: Generate insights from data using pandas. Sample examples: 1...
+2026-03-30 15:43:35,137 - INFO - orchestrator_tool - Step 2 | Agent: code | Task: Generate insights from data using pandas. Sample examples: 1. Total revenue by region, 2. Top-selling products, 3. Average customer value, 4. Daily product demand, 5. Total sales by month
+2026-03-30 15:43:36,396 - INFO - httpx - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-30 15:43:36,398 - INFO - autogen_core.events - {"tools": [], "type": "LLMCall", "messages": [{"content": "You are a Python code generator.\n\nReturn ONLY executable Python code.\nDo not return JSON.\nDo not explain anything.\nDo not add markdown fences.\nDo not add expected output.\nAlways use proper indentation.\nAlways print final results using print().\nNever compress logic into one line.\nWrite safe, error-free Python.\n\nWhen working with CSV data:\n- If csv_data is provided, use it directly.\n- Parse it with io.StringIO and pandas.\n- Do not recreate the dataset manually.\n- Use safe pandas indexing.\n- Never use df.loc[-1]; use df.iloc[-1] for the last row.\n\nStyle example:\ndef is_palindrome(n):\n    if str(n) == str(n)[::-1]:\n        return True\n    else:\n        return False", "role": "system"}, {"role": "user", "name": "user", "content": "Generate insights from data using pandas. Sample examples: 1. Total revenue by region, 2. Top-selling products, 3. Average customer value, 4. Daily product demand, 5. Total sales by month\n\nContext from Previous Steps:\n\ncsv_data:\nmonth,product,region,units_sold,revenue,cost\nJan,Laptop,North,120,144000,96000\nJan,Phone,North,340,102000,68000\nJan,Tablet,South,89,53400,35600\nFeb,Laptop,South,95,114000,76000\nFeb,Phone,East,420,126000,84000\nFeb,Tablet,North,110,66000,44000\nMar,Laptop,East,145,174000,116000\nMar,Phone,South,380,114000,76000\nMar,Tablet,East,200,120000,80000\nApr,Laptop,West,160,192000,128000\nApr,Phone,West,510,153000,102000\nApr,Tablet,West,175,105000,70000\nMay,Laptop,North,130,156000,104000\nMay,Phone,North,460,138000,92000\nMay,Tablet,South,220,132000,88000\nJun,Laptop,South,180,216000,144000\nJun,Phone,East,390,117000,78000\nJun,Tablet,North,140,84000,56000\n"}], "response": {"id": "chatcmpl-ee3032e8-7c3a-4f3e-ae58-35a59b09fe2e", "choices": [{"finish_reason": "stop", "index": 0, "logprobs": null, "message": {"content": "```python\nimport pandas as pd\nimport io\n\ncsv_data = \"\"\"month,product,region,units_sold,revenue,cost\nJan,Laptop,North,120,144000,96000\nJan,Phone,North,340,102000,68000\nJan,Tablet,South,89,53400,35600\nFeb,Laptop,South,95,114000,76000\nFeb,Phone,East,420,126000,84000\nFeb,Tablet,North,110,66000,44000\nMar,Laptop,East,145,174000,116000\nMar,Phone,South,380,114000,76000\nMar,Tablet,East,200,120000,80000\nApr,Laptop,West,160,192000,128000\nApr,Phone,West,510,153000,102000\nApr,Tablet,West,175,105000,70000\nMay,Laptop,North,130,156000,104000\nMay,Phone,North,460,138000,92000\nMay,Tablet,South,220,132000,88000\nJun,Laptop,South,180,216000,144000\nJun,Phone,East,390,117000,78000\nJun,Tablet,North,140,84000,56000\"\"\"\n\n# Load data\ndef load_data(csv_data):\n    return pd.read_csv(io.StringIO(csv_data))\n\n# Get total revenue by region\ndef get_total_revenue_by_region(df):\n    total_revenue_by_region = df.groupby('region')['revenue'].sum().reset_index()\n    total_revenue_by_region = total_revenue_by_region.sort_values(by='revenue', ascending=False)\n    return total_revenue_by_region\n\n# Get top-selling products\ndef get_top_selling_products(df, num_products):\n    top_products = df.groupby('product')['units_sold'].sum().reset_index()\n    top_products = top_products.sort_values(by='units_sold', ascending=False).head(num_products)\n    return top_products\n\n# Get average customer value\ndef get_average_customer_value(df):\n    total_revenue = df['revenue'].sum()\n    total_units_sold = df['units_sold'].sum()\n    average_customer_value = total_revenue / total_units_sold\n    return average_customer_value\n\n# Get daily product demand\ndef get_daily_product_demand(df):\n    demand = {}\n    for product in df['product'].unique():\n        demand[product] = df[df['product'] == product]['units_sold'].sum() / len(df)\n    return demand\n\n# Get total sales by month\ndef get_total_sales_by_month(df):\n    total_sales_by_month = df.groupby('month')['revenue'].sum().reset_index()\n    total_sales_by_month = total_sales_by_month.sort_values(by='month')\n    return total_sales_by_month\n\n# Main function\ndef main():\n    df = load_data(csv_data)\n    \n    print(\"Total revenue by region:\")\n    print(get_total_revenue_by_region(df))\n    \n    print(\"\\nTop-selling products:\")\n    print(get_top_selling_products(df, 5))\n    \n    print(\"\\nAverage customer value: $\", get_average_customer_value(df))\n    \n    print(\"\\nDaily product demand:\")\n    print(get_daily_product_demand(df))\n    \n    print(\"\\nTotal sales by month:\")\n    print(get_total_sales_by_month(df))\n\nif __name__ == \"__main__\":\n    main()\n```\nWhen you run this code, it will load the data, calculate the specified insights, and print the results. The `main()` function is used to call all the other functions in a single place for ease of execution.", "refusal": null, "role": "assistant", "annotations": null, "audio": null, "function_call": null, "tool_calls": null}}], "created": 1774865616, "model": "llama-3.1-8b-instant", "object": "chat.completion", "service_tier": "on_demand", "system_fingerprint": "fp_f757f4b0bf", "usage": {"completion_tokens": 765, "prompt_tokens": 513, "total_tokens": 1278, "completion_tokens_details": null, "prompt_tokens_details": null, "queue_time": 0.047087058, "prompt_time": 0.031204082, "completion_time": 0.98534709, "total_time": 1.016551172}, "usage_breakdown": null, "x_groq": {"id": "req_01kmz3r2g4f6c9m5rkrkkbte88", "seed": 13091573}}, "prompt_tokens": 513, "completion_tokens": 765, "agent_id": null}
+2026-03-30 15:43:36,399 - INFO - tools.code_executor - Generated code:
+import pandas as pd
+import io
+
+csv_data = """month,product,region,units_sold,revenue,cost
+Jan,Laptop,North,120,144000,96000
+Jan,Phone,North,340,102000,68000
+Jan,Tablet,South,89,53400,35600
+Feb,Laptop,South,95,114000,76000
+Feb,Phone,East,420,126000,84000
+Feb,Tablet,North,110,66000,44000
+Mar,Laptop,East,145,174000,116000
+Mar,Phone,South,380,114000,76000
+Mar,Tablet,East,200,120000,80000
+Apr,Laptop,West,160,192000,128000
+Apr,Phone,West,510,153000,102000
+Apr,Tablet,West,175,105000,70000
+May,Laptop,North,130,156000,104000
+May,Phone,North,460,138000,92000
+May,Tablet,South,220,132000,88000
+Jun,Laptop,South,180,216000,144000
+Jun,Phone,East,390,117000,78000
+Jun,Tablet,North,140,84000,56000"""
+
+# Load data
+def load_data(csv_data):
+    return pd.read_csv(io.StringIO(csv_data))
+
+# Get total revenue by region
+def get_total_revenue_by_region(df):
+    total_revenue_by_region = df.groupby('region')['revenue'].sum().reset_index()
+    total_revenue_by_region = total_revenue_by_region.sort_values(by='revenue', ascending=False)
+    return total_revenue_by_region
+
+# Get top-selling products
+def get_top_selling_products(df, num_products):
+    top_products = df.groupby('product')['units_sold'].sum().reset_index()
+    top_products = top_products.sort_values(by='units_sold', ascending=False).head(num_products)
+    return top_products
+
+# Get average customer value
+def get_average_customer_value(df):
+    total_revenue = df['revenue'].sum()
+    total_units_sold = df['units_sold'].sum()
+    average_customer_value = total_revenue / total_units_sold
+    return average_customer_value
+
+# Get daily product demand
+def get_daily_product_demand(df):
+    demand = {}
+    for product in df['product'].unique():
+        demand[product] = df[df['product'] == product]['units_sold'].sum() / len(df)
+    return demand
+
+# Get total sales by month
+def get_total_sales_by_month(df):
+    total_sales_by_month = df.groupby('month')['revenue'].sum().reset_index()
+    total_sales_by_month = total_sales_by_month.sort_values(by='month')
+    return total_sales_by_month
+
+# Main function
+def main():
+    df = load_data(csv_data)
+    
+    print("Total revenue by region:")
+    print(get_total_revenue_by_region(df))
+    
+    print("\nTop-selling products:")
+    print(get_top_selling_products(df, 5))
+    
+    print("\nAverage customer value: $", get_average_customer_value(df))
+    
+    print("\nDaily product demand:")
+    print(get_daily_product_demand(df))
+    
+    print("\nTotal sales by month:")
+    print(get_total_sales_by_month(df))
+
+if __name__ == "__main__":
+    main()
+2026-03-30 15:43:36,696 - INFO - orchestrator_tool - Step 2 completed. Preview: Total revenue by region:
+  region  revenue
+1  North   690000
+2  South   629400
+0
+Result saved to 'insights'
+
+
+FINAL CONTEXT OUTPUT:
+
+csv_data:
+month,product,region,units_sold,revenue,cost
+Jan,Laptop,North,120,144000,96000
+Jan,Phone,North,340,102000,68000
+Jan,Tablet,South,89,53400,35600
+Feb,Laptop,South,95,114000,76000
+Feb,Phone,East,420,126000,84000
+Feb,Tablet,North,110,66000,44000
+Mar,Laptop,East,145,174000,116000
+Mar,Phone,South,380,114000,76000
+Mar,Tablet,East,200,120000,80000
+Apr,Laptop,West,160,192000,128000
+Apr,Phone,West,510,153000,102000
+Apr,Tablet,West,175,105000,70000
+May,Laptop,North,130,156000,104000
+May,Phone,North,460,138000,92000
+May,Tablet,South,220,132000,88000
+Jun,Laptop,South,180,216000,144000
+Jun,Phone,East,390,117000,78000
+Jun,Tablet,North,140,84000,56000
+
+insights:
+Total revenue by region:
+  region  revenue
+1  North   690000
+2  South   629400
+0   East   537000
+3   West   450000
+
+Top-selling products:
+  product  units_sold
+1   Phone        2500
+2  Tablet         934
+0  Laptop         830
+
+Average customer value: $ 540.9005628517824
+
+Daily product demand:
+{'Laptop': np.float64(46.111111111111114), 'Phone': np.float64(138.88888888888889), 'Tablet': np.float64(51.888888888888886)}
+
+Total sales by month:
+  month  revenue
+0   Apr   450000
+1   Feb   306000
+2   Jan   299400
+3   Jun   417000
+4   Mar   408000
+5   May   426000
+
+Generating summary...
+
+2026-03-30 15:43:37,078 - INFO - httpx - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-30 15:43:37,080 - INFO - autogen_core.events - {"tools": [], "type": "LLMCall", "messages": [{"content": "\nYou are a Summarizer Agent.\n\nYour job is to summarize research findings.\n\nRules:\n- Convert the bullet points into ONE concise paragraph\n- Maximum 80 words\n- Focus only on key insights\n- Do NOT repeat bullet formatting\n- Do NOT add new information\n- Do NOT answer the question\n\nThe summary will be passed to the Answer Agent.", "role": "system"}, {"role": "user", "name": "user", "content": "Summarize this concisely:\n\ncsv_data:\nmonth,product,region,units_sold,revenue,cost\nJan,Laptop,North,120,144000,96000\nJan,Phone,North,340,102000,68000\nJan,Tablet,South,89,53400,35600\nFeb,Laptop,South,95,114000,76000\nFeb,Phone,East,420,126000,84000\nFeb,Tablet,North,110,66000,44000\nMar,Laptop,East,145,174000,116000\nMar,Phone,South,380,114000,76000\nMar,Tablet,East,200,120000,80000\nApr,Laptop,West,160,192000,128000\nApr,Phone,West,510,153000,102000\nApr,Tablet,West,175,105000,70000\nMay,Laptop,North,130,156000,104000\nMay,Phone,North,460,138000,92000\nMay,Tablet,South,220,132000,88000\nJun,Laptop,South,180,216000,144000\nJun,Phone,East,390,117000,78000\nJun,Tablet,North,140,84000,56000\n\ninsights:\nTotal revenue by region:\n  region  revenue\n1  North   690000\n2  South   629400\n0   East   537000\n3   West   450000\n\nTop-selling products:\n  product  units_sold\n1   Phone        2500\n2  Tablet         934\n0  Laptop         830\n\nAverage customer value: $ 540.9005628517824\n\nDaily product demand:\n{'Laptop': np.float64(46.111111111111114), 'Phone': np.float64(138.88888888888889), 'Tablet': np.float64(51.888888888888886)}\n\nTotal sales by month:\n  month  revenue\n0   Apr   450000\n1   Feb   306000\n2   Jan   299400\n3   Jun   417000\n4   Mar   408000\n5   May   426000"}], "response": {"id": "chatcmpl-0f45070f-186b-4f91-8699-e31a9b0f6cf9", "choices": [{"finish_reason": "stop", "index": 0, "logprobs": null, "message": {"content": "Key findings reveal the company's revenue distribution by region, product, and month. Region-wise, North accounted for $690,000 in revenue. The top-selling products were Phone, Tablet, and Laptop, representing 2500, 934, and 830 units sold, respectively. The average customer value was approximately $540.90, while the average daily demand for Laptop, Phone, and Tablet was 46, 139, and 52 units, respectively.", "refusal": null, "role": "assistant", "annotations": null, "audio": null, "function_call": null, "tool_calls": null}}], "created": 1774865617, "model": "llama-3.1-8b-instant", "object": "chat.completion", "service_tier": "on_demand", "system_fingerprint": "fp_4387d3edbb", "usage": {"completion_tokens": 95, "prompt_tokens": 588, "total_tokens": 683, "completion_tokens_details": null, "prompt_tokens_details": null, "queue_time": 0.085185827, "prompt_time": 0.047648521, "completion_time": 0.166180646, "total_time": 0.213829167}, "usage_breakdown": null, "x_groq": {"id": "req_01kmz3r413ettbwtx3n3nb9f5j", "seed": 1972738625}}, "prompt_tokens": 588, "completion_tokens": 95, "agent_id": null}
+SUMMARY:
+
+Key findings reveal the company's revenue distribution by region, product, and month. Region-wise, North accounted for $690,000 in revenue. The top-selling products were Phone, Tablet, and Laptop, representing 2500, 934, and 830 units sold, respectively. The average customer value was approximately $540.90, while the average daily demand for Laptop, Phone, and Tablet was 46, 139, and 52 units, respectively.
+
+============================================================

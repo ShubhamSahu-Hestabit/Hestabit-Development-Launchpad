@@ -1,0 +1,11 @@
+ProductID,ProductName,SalesAmount,SalesDate
+1,Product A,100,2022-01-01
+2,Product B,200,2022-01-02
+3,Product C,300,2022-01-03
+4,Product D,400,2022-01-04
+5,Product E,500,2022-01-05
+6,Product F,600,2022-01-06
+7,Product G,700,2022-01-07
+8,Product H,800,2022-01-08
+9,Product I,900,2022-01-09
+10,Product J,1000,2022-01-10

@@ -1,0 +1,273 @@
+(venv) shubhamsahu@hestabit-LP:~/Hestabit-Development Launchpad/Week-9/Day-2$ python run_agents.py
+2026-03-29 21:24:34,870 - INFO - day2_orchestration - ACTIVE MODEL -> GROQ (llama-3.3-70b-versatile)
+2026-03-29 21:24:34,883 - INFO - day2_orchestration - Day-2 system started
+
+Multi-Agent Orchestration System
+
+Enter your task: Plan a 5 day Trip to Goa under the budget of 20 thousand
+
+Processing...
+
+Agents thinking |2026-03-29 21:25:25,506 - INFO - day2_orchestration - Planner started
+Agents thinking /2026-03-29 21:25:27,388 - INFO - day2_orchestration - Planner generated 6 subtasks
+
+Task Plan
+----------------------------------------
+task_1: Research and finalise travel dates, accommodation options, and activities to do in Goa within the given budget of 20 thousand.
+  depends_on: none
+task_2: Book flights to and from Goa, ensuring the best available prices and schedules.
+  depends_on: task_1
+task_3: Explore and book a suitable hotel or resort in Goa that fits within the allocated budget.
+  depends_on: task_1
+task_4: Plan the daily itinerary, including places to visit, water sports, and other activities, considering the time constraint of 5 days.
+  depends_on: task_1, task_3
+task_5: Create a detailed budget breakdown, including estimated costs for food, transportation, and miscellaneous expenses.
+  depends_on: task_2, task_3, task_4
+task_6: Evaluate the feasibility of the planned itinerary and make adjustments if necessary to ensure it stays within the budget.
+  depends_on: task_5
+
+Execution Tree
+----------------------------------------
+User
+└── Planner
+    └── Layer 1
+        └── Worker (task_1)
+    └── Layer 2
+        └── Worker (task_2) [depends on: task_1]
+        └── Worker (task_3) [depends on: task_1]
+    └── Layer 3
+        └── Worker (task_4) [depends on: task_1, task_3]
+    └── Layer 4
+        └── Worker (task_5) [depends on: task_2, task_3, task_4]
+    └── Layer 5
+        └── Worker (task_6) [depends on: task_5]
+    └── Reflection
+        └── Validator
+2026-03-29 21:25:27,388 - INFO - day2_orchestration - Executing layer: ['task_1']
+
+Layer: task_1
+2026-03-29 21:25:27,389 - INFO - day2_orchestration - Worker started | subtask=task_1
+
+Worker: task_1
+----------------------------------------
+MAIN TASK:
+Plan a 5 day Trip to Goa under the budget of 20 thousand
+
+SUBTASK ID:
+task_1
+
+SUBTASK:
+Research and finalise travel dates, accommodation options, and activities to do in Goa within the given budget of 20 thousand.
+Agents thinking \For task_1, I recommend:
+
+**Travel Dates:** mid-week (Tuesday to Sunday) during the off-season (April to May or September to November) to save on accommodation and activities.
+
+**Accommodation:** Book a budget-friendly hotel or hostel in North Goa, such as Calangute or Candolim, which offers rooms starting from ₹1,500 per night. Allocate ₹8,000 for 5 nights.
+
+**Activities:**
+
+1. Visit popular beaches like Calangute, Baga, and Palolem.
+2. Take a sunset cruise (₹800 per person).
+3. Explore the For...
+2026-03-29 21:25:28,608 - INFO - day2_orchestration - Worker completed | subtask=task_1
+2026-03-29 21:25:28,608 - INFO - day2_orchestration - Executing layer: ['task_2', 'task_3']
+
+Layer: task_2, task_3
+2026-03-29 21:25:28,609 - INFO - day2_orchestration - Worker started | subtask=task_2
+
+Worker: task_2
+----------------------------------------
+MAIN TASK:
+Plan a 5 day Trip to Goa under the budget of 20 thousand
+
+SUBTASK ID:
+task_2
+
+SUBTASK:
+Book flights to and from Goa, ensuring the best available prices and schedules.
+2026-03-29 21:25:28,612 - INFO - day2_orchestration - Worker started | subtask=task_3
+
+Worker: task_3
+----------------------------------------
+MAIN TASK:
+Plan a 5 day Trip to Goa under the budget of 20 thousand
+
+SUBTASK ID:
+task_3
+
+SUBTASK:
+Explore and book a suitable hotel or resort in Goa that fits within the allocated budget.
+Agents thinking /For SUBTASK task_3, I recommend booking a hotel in Calangute, North Goa. 
+
+**Hotel Options:**
+1. OYO 10450 Home Cozy 2BHK - ₹1,400 per night
+2. Hotel Blue Heaven - ₹1,600 per night
+3. Casa Vagator - ₹1,800 per night
+
+**Booking Details:**
+Book a room at OYO 10450 Home Cozy 2BHK for 5 nights, totaling ₹7,000. This option fits within the allocated budget of ₹8,000 for accommodation and leaves ₹1,000 for any additional expenses or upgrades.
+2026-03-29 21:25:29,735 - INFO - day2_orchestration - Worker completed | subtask=task_3
+For task_2, I recommend:
+
+**Flights to and from Goa:**
+
+* Book flights for mid-week travel (Tuesday to Sunday) during the off-season (April to May or September to November) to ensure the best available prices.
+* Consider flying into Dabolim Airport (GOI) and book a budget-friendly airline such as SpiceJet, IndiGo, or GoAir.
+* Allocate ₹4,000 - ₹6,000 for round-trip flights, depending on the airline and time of booking.
+
+**Example Flight Booking:**
+
+* Delhi to Goa: SpiceJet (₹2,000 - ₹3,000)
+* Go...
+2026-03-29 21:25:29,739 - INFO - day2_orchestration - Worker completed | subtask=task_2
+2026-03-29 21:25:29,740 - INFO - day2_orchestration - Executing layer: ['task_4']
+
+Layer: task_4
+2026-03-29 21:25:29,742 - INFO - day2_orchestration - Worker started | subtask=task_4
+
+Worker: task_4
+----------------------------------------
+MAIN TASK:
+Plan a 5 day Trip to Goa under the budget of 20 thousand
+
+SUBTASK ID:
+task_4
+
+SUBTASK:
+Plan the daily itinerary, including places to visit, water sports, and other activities, considering the time constraint of 5 days.
+Agents thinking \Given the constraints and recommendations from previous tasks, I've created a daily itinerary for the 5-day trip to Goa:
+
+Day 1 (Tuesday): Arrival and Beach Relaxation
+- Check-in at OYO 10450 Home Cozy 2BHK in Calangute
+- Spend the day relaxing at Calangute Beach
+- Explore nearby restaurants and shops in the evening
+
+Day 2 (Wednesday): North Goa Exploration
+- Visit Baga Beach for water sports (parasailing and jet-skiing, ₹1,200 per person)
+- Explore Fort Aguada
+- Enjoy the sunset at Baga Beach
+
+...
+2026-03-29 21:25:30,963 - INFO - day2_orchestration - Worker completed | subtask=task_4
+2026-03-29 21:25:30,963 - INFO - day2_orchestration - Executing layer: ['task_5']
+
+Layer: task_5
+2026-03-29 21:25:30,964 - INFO - day2_orchestration - Worker started | subtask=task_5
+
+Worker: task_5
+----------------------------------------
+MAIN TASK:
+Plan a 5 day Trip to Goa under the budget of 20 thousand
+
+SUBTASK ID:
+task_5
+
+SUBTASK:
+Create a detailed budget breakdown, including estimated costs for food, transportation, and miscellaneous expenses.
+Agents thinking -**Detailed Budget Breakdown for 5-Day Trip to Goa**
+
+1. **Flights**: ₹4,000 - ₹6,000 (depending on the airline and time of booking)
+2. **Accommodation**: ₹7,000 (5 nights at OYO 10450 Home Cozy 2BHK)
+3. **Food**:
+   - Breakfast: ₹200 - ₹300 per day (avg.) = ₹1,000 - ₹1,500 for 5 days
+   - Lunch: ₹300 - ₹500 per day (avg.) = ₹1,500 - ₹2,500 for 5 days
+   - Dinner: ₹500 - ₹800 per day (avg.) = ₹2,500 - ₹4,000 for 5 days
+   - Snacks and beverages: ₹500 - ₹1,000 for 5 days
+   Total food budget: ₹5,5...
+2026-03-29 21:25:32,402 - INFO - day2_orchestration - Worker completed | subtask=task_5
+2026-03-29 21:25:32,403 - INFO - day2_orchestration - Executing layer: ['task_6']
+
+Layer: task_6
+2026-03-29 21:25:32,404 - INFO - day2_orchestration - Worker started | subtask=task_6
+
+Worker: task_6
+----------------------------------------
+MAIN TASK:
+Plan a 5 day Trip to Goa under the budget of 20 thousand
+
+SUBTASK ID:
+task_6
+
+SUBTASK:
+Evaluate the feasibility of the planned itinerary and make adjustments if necessary to ensure it stays within the budget.
+Agents thinking -To ensure the 5-day trip to Goa stays within the budget of ₹20,000, I recommend the following adjustments:
+
+1. **Food**: Opt for budget-friendly options, targeting the lower end of the estimated food budget (₹5,500).
+2. **Transportation**: Use public transport or walk/bike for local travel, reducing the transportation budget to ₹500-₹1,000.
+3. **Miscellaneous**: Replace water sports and sunset cruise with free or low-cost activities, and allocate ₹1,000 for entry fees, souvenirs, and other expen...
+2026-03-29 21:25:33,220 - INFO - day2_orchestration - Worker completed | subtask=task_6
+2026-03-29 21:25:33,223 - INFO - day2_orchestration - Reflection started
+Agents thinking -
+Reflection
+----------------------------------------
+**5-Day Trip to Goa Under ₹20,000**
+
+To plan a 5-day trip to Goa within the budget of ₹20,000, we have considered various factors such as travel dates, accommodation, activities, and transportation. Based on the recommendations from multiple agents, we have created a comprehensive plan that balances...
+2026-03-29 21:25:34,857 - INFO - day2_orchestration - Reflection completed
+2026-03-29 21:25:34,859 - INFO - day2_orchestration - Validation started
+Agents thinking /
+Validation: PASS
+2026-03-29 21:25:36,291 - INFO - day2_orchestration - Validation completed | status=PASS
+2026-03-29 21:25:36,292 - INFO - day2_orchestration - Planner pipeline completed
+Done.
+
+Final Result
+----------------------------------------
+**5-Day Trip to Goa Under ₹20,000**
+
+To plan a 5-day trip to Goa within the budget of ₹20,000, we have considered various factors such as travel dates, accommodation, activities, and transportation. Based on the recommendations from multiple agents, we have created a comprehensive plan that balances relaxation, exploration, and adventure.
+
+**Travel Dates and Flights:**
+Book flights for mid-week travel (Tuesday to Sunday) during the off-season (April to May or September to November) to ensure the best available prices. Consider flying into Dabolim Airport (GOI) and book a budget-friendly airline such as SpiceJet, IndiGo, or GoAir. Allocate ₹4,000 - ₹6,000 for round-trip flights, depending on the airline and time of booking.
+
+**Accommodation:**
+Book a room at OYO 10450 Home Cozy 2BHK in Calangute for 5 nights, totaling ₹7,000. This option fits within the allocated budget of ₹8,000 for accommodation and leaves ₹1,000 for any additional expenses or upgrades.
+
+**Daily Itinerary:**
+
+Day 1 (Tuesday): Arrival and Beach Relaxation
+- Check-in at OYO 10450 Home Cozy 2BHK in Calangute
+- Spend the day relaxing at Calangute Beach
+- Explore nearby restaurants and shops in the evening
+
+Day 2 (Wednesday): North Goa Exploration
+- Visit Baga Beach for relaxation
+- Explore Fort Aguada
+- Enjoy the sunset at Baga Beach
+
+Day 3 (Thursday): South Goa Adventure
+- Visit Palolem Beach
+- Take a leisurely walk or engage in free activities
+- Explore the local market in the evening
+
+Day 4 (Friday): Heritage and Leisure
+- Visit Chapora Fort
+- Spend the day at Candolim Beach
+- Enjoy local cuisine and live music in the evening
+
+Day 5 (Sunday): Leisure and Departure
+- Spend the morning at leisure or visit any last-minute attractions
+- Check-out from the hotel and depart from Goa
+
+**Budget Breakdown:**
+
+1. **Flights**: ₹4,000 - ₹6,000
+2. **Accommodation**: ₹7,000
+3. **Food**: ₹5,500 (targeting budget-friendly options)
+4. **Transportation**: ₹500-₹1,000 (using public transport or walking/biking)
+5. **Miscellaneous**: ₹1,000 (entry fees, souvenirs, and other expenses)
+
+**Total Estimated Budget**: ₹16,500 - ₹18,500
+
+To stay within the budget of ₹20,000, consider the following adjustments:
+
+- Opt for budget-friendly food options
+- Use public transport or walk/bike for local travel
+- Choose free or low-cost activities for leisure
+- Allocate ₹1,000 - ₹2,000 for any unexpected expenses
+
+By making these adjustments, the total estimated budget can be reduced to ₹16,500 - ₹18,500, making the trip more affordable and within the given budget constraints.
+
+Validation: PASS
+2026-03-29 21:25:36,324 - INFO - day2_orchestration - Validation: PASS
+2026-03-29 21:25:36,324 - INFO - day2_orchestration - Runtime stopped

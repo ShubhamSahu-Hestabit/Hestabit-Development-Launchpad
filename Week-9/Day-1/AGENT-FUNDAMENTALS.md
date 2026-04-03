@@ -62,8 +62,8 @@ The context window is not explicitly defined in the code. The system uses the mo
 
 # Screenshot
 Add your terminal output screenshot here:
-![Agent Pipeline Output](Week9_day1_1.png)
-![Agent Pipeline Output](Week9_day1_1.png)
+![Agent Pipeline Output](images/Week9_day1_1.png)
+![Agent Pipeline Output](images/Week9_day1_1.png)
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
